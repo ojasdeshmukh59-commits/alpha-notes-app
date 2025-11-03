@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Notes - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #151520;
+            --bg-card: rgba(30, 30, 45, 0.7);
+            --text-primary: #f0f0ff;
+            --text-secondary: #b0b0c0;
+            --accent-primary: #6366f1;
+            --accent-secondary: #a855f7;
+            --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --border-radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(30, 30, 45, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+        }
+
+        /* Header */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            color: var(--accent-primary);
+        }
+
+        /* Layout */
+        .admin-layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--bg-secondary);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px 0;
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th {
+            background: rgba(255, 255, 255, 0.05);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .data-table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            color: var(--accent-primary);
+        }
+
+        .action-btn.delete:hover {
+            color: var(--danger);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            glass;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: var(--border-radius);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            glass;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-primary);
+        }
+
+        .stat-icon.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .stat-icon.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .stat-icon.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-info p {
+            color: var(--text-secondary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Product Preview */
+        .product-preview {
+            glass;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: var(--border-radius);
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+        }
+
+        /* Image Upload Helper */
+        .image-helper {
+            margin-top: 10px;
+            padding: 15px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: var(--border-radius);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .image-helper h4 {
+            margin-bottom: 10px;
+            color: var(--accent-primary);
+        }
+
+        .image-helper p {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .helper-btn {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .toast {
+            glass;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 250px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast-info {
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Login Page */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            glass;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            border-radius: var(--border-radius);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .login-title {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+            }
+
+            .sidebar-link span {
+                display: none;
+            }
+
+            .main-content {
+                padding: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .data-table {
+                font-size: 0.9rem;
+            }
+
+            .data-table th, .data-table td {
+                padding: 8px 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .tabs {
+                overflow-x: auto;
+            }
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Focus styles */
+        *:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-book-open"></i> Alpha Notes
+                </div>
+                <h2 class="login-title">Admin Login</h2>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="email">Email</label>
+                    <input type="email" class="form-input" id="email" value="ojasdeshmukh59@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" class="form-input" id="password" value="ojasaayu" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-book-open"></i>
+                        Alpha Notes Admin
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn" id="notificationsBtn" aria-label="Notifications">
+                            <i class="far fa-bell"></i>
+                        </button>
+                        <button class="icon-btn" id="profileBtn" aria-label="Profile">
+                            <i class="far fa-user"></i>
+                        </button>
+                        <button class="icon-btn" id="logoutBtn" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Layout -->
+        <div class="admin-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link active" data-page="dashboard">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="products">
+                            <i class="fas fa-box"></i>
+                            <span>Products</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="orders">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="users">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="settings">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="#" class="sidebar-link" data-page="analytics">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Dashboard Page -->
+                <div id="dashboardPage" class="page-content active">
+                    <div class="page-header">
+                        <h1 class="page-title">Dashboard</h1>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon primary">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalProducts">0</h3>
+                                <p>Total Products</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalOrders">0</h3>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-rupee-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalRevenue">₹0</h3>
+                                <p>Total Revenue</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass" style="padding: 20px; border-radius: var(--border-radius);">
+                        <h3 style="margin-bottom: 20px;">Recent Orders</h3>
+                        <div id="recentOrders">
+                            <!-- Recent orders will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Page -->
+                <div id="productsPage" class="page-content">
+                    <div class="page-header">
+                        <h1 class="page-title">Products</h1>
+                        <button class="btn btn-primary" id="addProductBtn">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
+
+                    <div class="glass" style="padding: 20px; border-radius: var(--border-radius); overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Title</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTable">
+                                <!-- Products will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Orders Page -->
+                <div id="ordersPage" class="page-content">
+                    <div class="page-header">
+                        <h1 class="page-title">Orders</h1>
+                        <div>
+                            <button class="btn btn-secondary" id="exportOrdersBtn">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass" style="padding: 20px; border-radius: var(--border-radius); overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable">
+                                <!-- Orders will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Users Page -->
+                <div id="usersPage" class="page-content">
+                    <div class="page-header">
+                        <h1 class="page-title">Users</h1>
+                    </div>
+
+                    <div class="glass" style="padding: 20px; border-radius: var(--border-radius); overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                    <th>Orders</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Settings Page -->
+                <div id="settingsPage" class="page-content">
+                    <div class="page-header">
+                        <h1 class="page-title">Settings</h1>
+                        <button class="btn btn-primary" id="saveSettingsBtn">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+
+                    <div class="tabs">
+                        <button class="tab active" data-tab="general">General</button>
+                        <button class="tab" data-tab="payment">Payment</button>
+                        <button class="tab" data-tab="legal">Legal</button>
+                        <button class="tab" data-tab="social">Social</button>
+                    </div>
+
+                    <div class="tab-content active" id="generalTab">
+                        <div class="glass" style="padding: 20px; border-radius: var(--border-radius);">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="siteTitle">Site Title</label>
+                                    <input type="text" class="form-input" id="siteTitle" value="Alpha Notes">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="logoUrl">Logo URL</label>
+                                    <input type="text" class="form-input" id="logoUrl" placeholder="https://example.com/logo.png">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="announcements">Announcements</label>
+                                <textarea class="form-textarea" id="announcements" placeholder="Enter announcements HTML"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="paymentTab">
+                        <div class="glass" style="padding: 20px; border-radius: var(--border-radius);">
+                            <div class="form-group">
+                                <label class="form-label" for="upiId">UPI ID</label>
+                                <input type="text" class="form-input" id="upiId" placeholder="your-upi-id@bank">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="gstNumber">GST Number</label>
+                                <input type="text" class="form-input" id="gstNumber" placeholder="GSTIN">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="legalTab">
+                        <div class="glass" style="padding: 20px; border-radius: var(--border-radius);">
+                            <div class="form-group">
+                                <label class="form-label" for="privacyPolicy">Privacy Policy (HTML)</label>
+                                <textarea class="form-textarea" id="privacyPolicy" rows="10" placeholder="Enter privacy policy HTML"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="terms">Terms of Service (HTML)</label>
+                                <textarea class="form-textarea" id="terms" rows="10" placeholder="Enter terms of service HTML"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="refundPolicy">Refund Policy (HTML)</label>
+                                <textarea class="form-textarea" id="refundPolicy" rows="10" placeholder="Enter refund policy HTML"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-content" id="socialTab">
+                        <div class="glass" style="padding: 20px; border-radius: var(--border-radius);">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="contactEmail">Contact Email</label>
+                                    <input type="email" class="form-input" id="contactEmail" placeholder="contact@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="contactPhone">Contact Phone</label>
+                                    <input type="tel" class="form-input" id="contactPhone" placeholder="+91 9876543210">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="youtubeChannel">YouTube Channel</label>
+                                    <input type="text" class="form-input" id="youtubeChannel" placeholder="https://youtube.com/channel/...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="telegramLink">Telegram Link</label>
+                                    <input type="text" class="form-input" id="telegramLink" placeholder="https://t.me/...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="analyticsPage" class="page-content">
+                    <div class="page-header">
+                        <h1 class="page-title">Analytics</h1>
+                        <div>
+                            <button class="btn btn-secondary" id="exportAnalyticsBtn">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass" style="padding: 20px; border-radius: var(--border-radius); margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 20px;">Revenue Overview</h3>
+                        <canvas id="revenueChart" height="100"></canvas>
+                    </div>
+
+                    <div class="glass" style="padding: 20px; border-radius: var(--border-radius);">
+                        <h3 style="margin-bottom: 20px;">Top Selling Products</h3>
+                        <div id="topProducts">
+                            <!-- Top products will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="productModalTitle">Add Product</h2>
+                <button class="modal-close" id="productModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="productTitle">Title</label>
+                            <input type="text" class="form-input" id="productTitle" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="productCategory">Category</label>
+                            <select class="form-select" id="productCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="biology">Biology</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="productPrice">Price (₹)</label>
+                            <input type="number" class="form-input" id="productPrice" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="productStock">Stock</label>
+                            <input type="number" class="form-input" id="productStock" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="productDescription">Description</label>
+                        <textarea class="form-textarea" id="productDescription" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="productThumbnails">Image URLs (one per line)</label>
+                        <textarea class="form-textarea" id="productThumbnails" rows="3" placeholder="https://freeimage.host/image1.jpg&#10;https://freeimage.host/image2.jpg"></textarea>
+                        <div class="image-helper">
+                            <h4>How to add images:</h4>
+                            <p>1. Visit <a href="https://freeimage.host" target="_blank">FreeImage.host</a></p>
+                            <p>2. Upload your images</p>
+                            <p>3. Copy the direct link URLs</p>
+                            <p>4. Paste them here (one per line)</p>
+                            <button type="button" class="helper-btn" onclick="window.open('https://freeimage.host', '_blank')">
+                                <i class="fas fa-external-link-alt"></i> Open FreeImage.host
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="productTags">Tags (comma separated)</label>
+                        <input type="text" class="form-input" id="productTags" placeholder="e.g. notes, study, exam">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="productDownloadLink">Download Link</label>
+                        <input type="text" class="form-input" id="productDownloadLink" placeholder="https://example.com/file.pdf">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="productFeatured"> Featured
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="productVisible" checked> Visible
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                <input type="checkbox" id="productAutoDeliver" checked> Auto Deliver
+                            </label>
+                        </div>
+                    </div>
+                </form>
+                
+                <div class="product-preview" id="productPreview">
+                    <h3>Preview</h3>
+                    <img src="https://picsum.photos/seed/preview/400/200.jpg" alt="Preview" class="preview-image" id="previewImage">
+                    <h4 id="previewTitle">Product Title</h4>
+                    <p id="previewDescription">Product description will appear here...</p>
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                        <span id="previewPrice">₹0</span>
+                        <span id="previewCategory">Category</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="productModalCancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveProductBtn">Save Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Order Details</h2>
+                <button class="modal-close" id="orderModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="orderDetails">
+                <!-- Order details will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="orderModalCancel">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Firebase Configuration - Replace with your config
+        const firebaseConfig = {
+  apiKey: "AIzaSyCwll-R6_LNPhCt6bFitr2zu_o2XHM5EqU",
+  authDomain: "alpha-notes-app-550d3.firebaseapp.com",
+  databaseURL: "https://alpha-notes-app-550d3-default-rtdb.firebaseio.com",
+  projectId: "alpha-notes-app-550d3",
+  storageBucket: "alpha-notes-app-550d3.firebasestorage.app",
+  messagingSenderId: "600503443065",
+  appId: "1:600503443065:web:e4c4b225745d5ef6b33ea8"
+};
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // App State
+        const app = {
+            user: null,
+            products: [],
+            orders: [],
+            users: [],
+            settings: {},
+            currentProduct: null,
+            currentOrder: null,
+            revenueChart: null
+        };
+
+        // DOM Elements
+        const elements = {
+            loginPage: document.getElementById('loginPage'),
+            adminDashboard: document.getElementById('adminDashboard'),
+            loginForm: document.getElementById('loginForm'),
+            sidebarLinks: document.querySelectorAll('.sidebar-link'),
+            pageContents: document.querySelectorAll('.page-content'),
+            tabs: document.querySelectorAll('.tab'),
+            tabContents: document.querySelectorAll('.tab-content'),
+            productModal: document.getElementById('productModal'),
+            productForm: document.getElementById('productForm'),
+            orderModal: document.getElementById('orderModal'),
+            toastContainer: document.getElementById('toastContainer')
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check authentication state
+            auth.onAuthStateChanged(user => {
+                app.user = user;
+                if (user) {
+                    // Check if user is admin
+                    db.collection('users').doc(user.uid).get()
+                        .then(doc => {
+                            if (doc.exists && doc.data().isAdmin) {
+                                showAdminDashboard();
+                                loadDashboardData();
+                            } else {
+                                showToast('Access denied. Admin privileges required.', 'error');
+                                auth.signOut();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error checking admin status:', error);
+                            auth.signOut();
+                        });
+                } else {
+                    showLoginPage();
+                }
+            });
+
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Login form
+            elements.loginForm.addEventListener('submit', handleLogin);
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                auth.signOut();
+            });
+
+            // Sidebar navigation
+            elements.sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.dataset.page;
+                    navigateToPage(page);
+                });
+            });
+
+            // Tabs
+            elements.tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    switchTab(tabName);
+                });
+            });
+
+            // Product modal
+            document.getElementById('addProductBtn').addEventListener('click', () => {
+                openProductModal();
+            });
+
+            document.getElementById('productModalClose').addEventListener('click', () => {
+                closeProductModal();
+            });
+
+            document.getElementById('productModalCancel').addEventListener('click', () => {
+                closeProductModal();
+            });
+
+            document.getElementById('saveProductBtn').addEventListener('click', saveProduct);
+
+            // Product form live preview
+            document.getElementById('productTitle').addEventListener('input', updateProductPreview);
+            document.getElementById('productPrice').addEventListener('input', updateProductPreview);
+            document.getElementById('productCategory').addEventListener('change', updateProductPreview);
+            document.getElementById('productDescription').addEventListener('input', updateProductPreview);
+            document.getElementById('productThumbnails').addEventListener('input', updateProductPreview);
+
+            // Order modal
+            document.getElementById('orderModalClose').addEventListener('click', () => {
+                closeOrderModal();
+            });
+
+            document.getElementById('orderModalCancel').addEventListener('click', () => {
+                closeOrderModal();
+            });
+
+            // Settings
+            document.getElementById('saveSettingsBtn').addEventListener('click', saveSettings);
+
+            // Export buttons
+            document.getElementById('exportOrdersBtn').addEventListener('click', exportOrders);
+            document.getElementById('exportAnalyticsBtn').addEventListener('click', exportAnalytics);
+        }
+
+        // Authentication
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    showToast('Login successful!', 'success');
+                })
+                .catch(error => {
+                    showToast(error.message, 'error');
+                });
+        }
+
+        function showLoginPage() {
+            elements.loginPage.style.display = 'flex';
+            elements.adminDashboard.style.display = 'none';
+        }
+
+        function showAdminDashboard() {
+            elements.loginPage.style.display = 'none';
+            elements.adminDashboard.style.display = 'block';
+        }
+
+        // Navigation
+        function navigateToPage(pageName) {
+            // Update sidebar
+            elements.sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageName) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update page content
+            elements.pageContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const selectedPage = document.getElementById(`${pageName}Page`);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+            }
+
+            // Load page-specific data
+            if (pageName === 'products') {
+                loadProducts();
+            } else if (pageName === 'orders') {
+                loadOrders();
+            } else if (pageName === 'users') {
+                loadUsers();
+            } else if (pageName === 'settings') {
+                loadSettings();
+            } else if (pageName === 'analytics') {
+                loadAnalytics();
+            }
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Update tabs
+            elements.tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Update tab content
+            elements.tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const selectedTab = document.getElementById(`${tabName}Tab`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+        }
+
+        // Dashboard
+        function loadDashboardData() {
+            // Load stats
+            loadDashboardStats();
+            
+            // Load recent orders
+            loadRecentOrders();
+        }
+
+        function loadDashboardStats() {
+            // Load products count
+            db.collection('products').get()
+                .then(querySnapshot => {
+                    document.getElementById('totalProducts').textContent = querySnapshot.size;
+                })
+                .catch(error => {
+                    console.error('Error loading products count:', error);
+                });
+
+            // Load orders count
+            db.collection('orders').get()
+                .then(querySnapshot => {
+                    document.getElementById('totalOrders').textContent = querySnapshot.size;
+                    
+                    // Calculate total revenue
+                    let totalRevenue = 0;
+                    querySnapshot.forEach(doc => {
+                        const order = doc.data();
+                        if (order.status === 'paid' || order.status === 'fulfilled') {
+                            totalRevenue += order.amount || 0;
+                        }
+                    });
+                    document.getElementById('totalRevenue').textContent = `₹${totalRevenue}`;
+                })
+                .catch(error => {
+                    console.error('Error loading orders count:', error);
+                });
+
+            // Load users count
+            db.collection('users').get()
+                .then(querySnapshot => {
+                    document.getElementById('totalUsers').textContent = querySnapshot.size;
+                })
+                .catch(error => {
+                    console.error('Error loading users count:', error);
+                });
+        }
+
+        function loadRecentOrders() {
+            const recentOrdersContainer = document.getElementById('recentOrders');
+            recentOrdersContainer.innerHTML = '<div class="spinner"></div>';
+
+            db.collection('orders').orderBy('createdAt', 'desc').limit(5).get()
+                .then(querySnapshot => {
+                    if (querySnapshot.empty) {
+                        recentOrdersContainer.innerHTML = '<p>No recent orders</p>';
+                        return;
+                    }
+
+                    let html = '<table class="data-table"><thead><tr><th>Order ID</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead><tbody>';
+                    
+                    querySnapshot.forEach(doc => {
+                        const order = doc.data();
+                        const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Unknown';
+                        const statusClass = `status-${order.status}`;
+                        
+                        html += `
+                            <tr>
+                                <td>${order.orderId}</td>
+                                <td>${order.userEmail || 'Unknown'}</td>
+                                <td>₹${order.amount || 0}</td>
+                                <td><span class="order-status ${statusClass}">${order.status}</span></td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += '</tbody></table>';
+                    recentOrdersContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading recent orders:', error);
+                    recentOrdersContainer.innerHTML = '<p>Failed to load recent orders</p>';
+                });
+        }
+
+        // Products
+        function loadProducts() {
+            const productsTable = document.getElementById('productsTable');
+            productsTable.innerHTML = '<tr><td colspan="7" style="text-align: center;"><div class="spinner"></div></td></tr>';
+
+            db.collection('products').get()
+                .then(querySnapshot => {
+                    app.products = [];
+                    querySnapshot.forEach(doc => {
+                        app.products.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    renderProducts();
+                })
+                .catch(error => {
+                    console.error('Error loading products:', error);
+                    productsTable.innerHTML = '<tr><td colspan="7" style="text-align: center;">Failed to load products</td></tr>';
+                });
+        }
+
+        function renderProducts() {
+            const productsTable = document.getElementById('productsTable');
+            
+            if (app.products.length === 0) {
+                productsTable.innerHTML = '<tr><td colspan="7" style="text-align: center;">No products found</td></tr>';
+                return;
+            }
+
+            productsTable.innerHTML = app.products.map(product => {
+                const imageUrl = product.thumbnails && product.thumbnails.length > 0 ? 
+                    product.thumbnails[0] : 'https://picsum.photos/seed/product/50/50.jpg';
+                
+                return `
+                    <tr>
+                        <td><img src="${imageUrl}" alt="${product.title}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;"></td>
+                        <td>${product.title}</td>
+                        <td>${product.category}</td>
+                        <td>₹${product.priceINR}</td>
+                        <td>${product.stock}</td>
+                        <td>${product.visible ? 'Visible' : 'Hidden'}</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="editProduct('${product.id}')" title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" onclick="deleteProduct('${product.id}')" title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openProductModal(productId = null) {
+            app.currentProduct = productId;
+            
+            if (productId) {
+                // Edit mode
+                document.getElementById('productModalTitle').textContent = 'Edit Product';
+                
+                // Load product data
+                const product = app.products.find(p => p.id === productId);
+                if (product) {
+                    document.getElementById('productTitle').value = product.title || '';
+                    document.getElementById('productCategory').value = product.category || '';
+                    document.getElementById('productPrice').value = product.priceINR || 0;
+                    document.getElementById('productStock').value = product.stock || 0;
+                    document.getElementById('productDescription').value = product.descriptionHTML || product.description || '';
+                    document.getElementById('productThumbnails').value = product.thumbnails ? product.thumbnails.join('\n') : '';
+                    document.getElementById('productTags').value = product.tags ? product.tags.join(', ') : '';
+                    document.getElementById('productDownloadLink').value = product.downloadLink || '';
+                    document.getElementById('productFeatured').checked = product.featured || false;
+                    document.getElementById('productVisible').checked = product.visible !== false;
+                    document.getElementById('productAutoDeliver').checked = product.autoDeliver !== false;
+                    
+                    updateProductPreview();
+                }
+            } else {
+                // Add mode
+                document.getElementById('productModalTitle').textContent = 'Add Product';
+                elements.productForm.reset();
+                updateProductPreview();
+            }
+            
+            elements.productModal.classList.add('active');
+        }
+
+        function closeProductModal() {
+            elements.productModal.classList.remove('active');
+            app.currentProduct = null;
+        }
+
+        function updateProductPreview() {
+            const title = document.getElementById('productTitle').value || 'Product Title';
+            const price = document.getElementById('productPrice').value || 0;
+            const category = document.getElementById('productCategory').value || 'Category';
+            const description = document.getElementById('productDescription').value || 'Product description will appear here...';
+            const thumbnails = document.getElementById('productThumbnails').value.split('\n').filter(url => url.trim());
+            
+            document.getElementById('previewTitle').textContent = title;
+            document.getElementById('previewPrice').textContent = `₹${price}`;
+            document.getElementById('previewCategory').textContent = category;
+            document.getElementById('previewDescription').textContent = description.substring(0, 100) + (description.length > 100 ? '...' : '');
+            
+            if (thumbnails.length > 0) {
+                document.getElementById('previewImage').src = thumbnails[0];
+            } else {
+                document.getElementById('previewImage').src = 'https://picsum.photos/seed/preview/400/200.jpg';
+            }
+        }
+
+        function saveProduct() {
+            const title = document.getElementById('productTitle').value;
+            const category = document.getElementById('productCategory').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            const description = document.getElementById('productDescription').value;
+            const thumbnails = document.getElementById('productThumbnails').value.split('\n').filter(url => url.trim());
+            const tags = document.getElementById('productTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const downloadLink = document.getElementById('productDownloadLink').value;
+            const featured = document.getElementById('productFeatured').checked;
+            const visible = document.getElementById('productVisible').checked;
+            const autoDeliver = document.getElementById('productAutoDeliver').checked;
+            
+            if (!title || !category || isNaN(price) || isNaN(stock) || !description) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            const productData = {
+                title,
+                category,
+                priceINR: price,
+                currency: 'INR',
+                stock,
+                descriptionHTML: description,
+                thumbnails,
+                tags,
+                downloadLink,
+                featured,
+                visible,
+                autoDeliver,
+                createdAt: app.currentProduct ? app.currentProduct.createdAt : firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            if (app.currentProduct) {
+                // Update existing product
+                db.collection('products').doc(app.currentProduct).update(productData)
+                    .then(() => {
+                        showToast('Product updated successfully', 'success');
+                        closeProductModal();
+                        loadProducts();
+                    })
+                    .catch(error => {
+                        console.error('Error updating product:', error);
+                        showToast('Failed to update product', 'error');
+                    });
+            } else {
+                // Add new product
+                db.collection('products').add(productData)
+                    .then(() => {
+                        showToast('Product added successfully', 'success');
+                        closeProductModal();
+                        loadProducts();
+                    })
+                    .catch(error => {
+                        console.error('Error adding product:', error);
+                        showToast('Failed to add product', 'error');
+                    });
+            }
+        }
+
+        function editProduct(productId) {
+            openProductModal(productId);
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                db.collection('products').doc(productId).delete()
+                    .then(() => {
+                        showToast('Product deleted successfully', 'success');
+                        loadProducts();
+                    })
+                    .catch(error => {
+                        console.error('Error deleting product:', error);
+                        showToast('Failed to delete product', 'error');
+                    });
+            }
+        }
+
+        // Orders
+        function loadOrders() {
+            const ordersTable = document.getElementById('ordersTable');
+            ordersTable.innerHTML = '<tr><td colspan="6" style="text-align: center;"><div class="spinner"></div></td></tr>';
+
+            db.collection('orders').orderBy('createdAt', 'desc').get()
+                .then(querySnapshot => {
+                    app.orders = [];
+                    querySnapshot.forEach(doc => {
+                        app.orders.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    renderOrders();
+                })
+                .catch(error => {
+                    console.error('Error loading orders:', error);
+                    ordersTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">Failed to load orders</td></tr>';
+                });
+        }
+
+        function renderOrders() {
+            const ordersTable = document.getElementById('ordersTable');
+            
+            if (app.orders.length === 0) {
+                ordersTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">No orders found</td></tr>';
+                return;
+            }
+
+            ordersTable.innerHTML = app.orders.map(order => {
+                const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Unknown';
+                const statusClass = `status-${order.status}`;
+                
+                return `
+                    <tr>
+                        <td>${order.orderId}</td>
+                        <td>${order.userEmail || 'Unknown'}</td>
+                        <td>${date}</td>
+                        <td>₹${order.amount || 0}</td>
+                        <td><span class="order-status ${statusClass}">${order.status}</span></td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="viewOrder('${order.id}')" title="View">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                ${order.status === 'pending' ? `
+                                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'paid')" title="Mark as Paid">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                ` : ''}
+                                ${order.status === 'paid' ? `
+                                    <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'fulfilled')" title="Mark as Fulfilled">
+                                        <i class="fas fa-truck"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewOrder(orderId) {
+            const order = app.orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            app.currentOrder = order;
+            
+            const orderDetails = document.getElementById('orderDetails');
+            const date = order.createdAt ? order.createdAt.toDate().toLocaleString() : 'Unknown';
+            
+            let productsHtml = '';
+            if (order.products && order.products.length > 0) {
+                productsHtml = '<table class="data-table"><thead><tr><th>Product</th><th>Price</th><th>Quantity</th></tr></thead><tbody>';
+                order.products.forEach(item => {
+                    productsHtml += `
+                        <tr>
+                            <td>${item.title}</td>
+                            <td>₹${item.price}</td>
+                            <td>${item.quantity}</td>
+                        </tr>
+                    `;
+                });
+                productsHtml += '</tbody></table>';
+            }
+            
+            orderDetails.innerHTML = `
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Order ID</label>
+                        <input type="text" class="form-input" value="${order.orderId}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="text" class="form-input" value="${date}" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Customer Email</label>
+                        <input type="text" class="form-input" value="${order.userEmail || 'Unknown'}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="orderStatusSelect">
+                            <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="paid" ${order.status === 'paid' ? 'selected' : ''}>Paid</option>
+                            <option value="fulfilled" ${order.status === 'fulfilled' ? 'selected' : ''}>Fulfilled</option>
+                            <option value="refunded" ${order.status === 'refunded' ? 'selected' : ''}>Refunded</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Total Amount</label>
+                    <input type="text" class="form-input" value="₹${order.amount || 0}" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Products</label>
+                    ${productsHtml}
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Notes</label>
+                    <textarea class="form-textarea" id="deliveryNotes" placeholder="Add delivery notes...">${order.deliveryNotes || ''}</textarea>
+                </div>
+            `;
+            
+            elements.orderModal.classList.add('active');
+        }
+
+        function closeOrderModal() {
+            elements.orderModal.classList.remove('active');
+            app.currentOrder = null;
+        }
+
+        function updateOrderStatus(orderId, status) {
+            db.collection('orders').doc(orderId).update({
+                status: status,
+                [status === 'paid' ? 'paidAt' : status === 'fulfilled' ? 'deliveredAt' : 'updatedAt']: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                showToast(`Order status updated to ${status}`, 'success');
+                loadOrders();
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+                showToast('Failed to update order status', 'error');
+            });
+        }
+
+        // Users
+        function loadUsers() {
+            const usersTable = document.getElementById('usersTable');
+            usersTable.innerHTML = '<tr><td colspan="6" style="text-align: center;"><div class="spinner"></div></td></tr>';
+
+            db.collection('users').get()
+                .then(querySnapshot => {
+                    app.users = [];
+                    querySnapshot.forEach(doc => {
+                        app.users.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    renderUsers();
+                })
+                .catch(error => {
+                    console.error('Error loading users:', error);
+                    usersTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">Failed to load users</td></tr>';
+                });
+        }
+
+        function renderUsers() {
+            const usersTable = document.getElementById('usersTable');
+            
+            if (app.users.length === 0) {
+                usersTable.innerHTML = '<tr><td colspan="6" style="text-align: center;">No users found</td></tr>';
+                return;
+            }
+
+            usersTable.innerHTML = app.users.map(user => {
+                const joinedDate = user.createdAt ? user.createdAt.toDate().toLocaleDateString() : 'Unknown';
+                
+                return `
+                    <tr>
+                        <td>${user.displayName || 'Unknown'}</td>
+                        <td>${user.email}</td>
+                        <td>${joinedDate}</td>
+                        <td>${user.orderCount || 0}</td>
+                        <td>${user.isAdmin ? 'Admin' : 'User'}</td>
+                        <td>
+                            <div class="table-actions">
+                                <button class="action-btn" onclick="toggleAdminRole('${user.id}', ${!user.isAdmin})" title="${user.isAdmin ? 'Remove Admin' : 'Make Admin'}">
+                                    <i class="fas fa-user-shield"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function toggleAdminRole(userId, makeAdmin) {
+            const action = makeAdmin ? 'make admin' : 'remove admin privileges from';
+            
+            if (confirm(`Are you sure you want to ${action} this user?`)) {
+                db.collection('users').doc(userId).update({
+                    isAdmin: makeAdmin
+                })
+                .then(() => {
+                    showToast(`User ${makeAdmin ? 'is now an admin' : 'is no longer an admin'}`, 'success');
+                    loadUsers();
+                })
+                .catch(error => {
+                    console.error('Error updating user role:', error);
+                    showToast('Failed to update user role', 'error');
+                });
+            }
+        }
+
+        // Settings
+        function loadSettings() {
+            db.collection('siteSettings').doc('settings').get()
+                .then(doc => {
+                    if (doc.exists) {
+                        app.settings = doc.data();
+                        
+                        // Populate form fields
+                        document.getElementById('siteTitle').value = app.settings.siteTitle || 'Alpha Notes';
+                        document.getElementById('logoUrl').value = app.settings.logoUrl || '';
+                        document.getElementById('announcements').value = app.settings.announcementsHtml || '';
+                        document.getElementById('upiId').value = app.settings.upiId || '';
+                        document.getElementById('gstNumber').value = app.settings.gstNumber || '';
+                        document.getElementById('privacyPolicy').value = app.settings.privacyPolicyHtml || '';
+                        document.getElementById('terms').value = app.settings.termsHtml || '';
+                        document.getElementById('refundPolicy').value = app.settings.refundPolicyHtml || '';
+                        document.getElementById('contactEmail').value = app.settings.contactEmail || '';
+                        document.getElementById('contactPhone').value = app.settings.contactPhone || '';
+                        document.getElementById('youtubeChannel').value = app.settings.youtubeChannel || '';
+                        document.getElementById('telegramLink').value = app.settings.telegramLink || '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading settings:', error);
+                });
+        }
+
+        function saveSettings() {
+            const settingsData = {
+                siteTitle: document.getElementById('siteTitle').value,
+                logoUrl: document.getElementById('logoUrl').value,
+                announcementsHtml: document.getElementById('announcements').value,
+                upiId: document.getElementById('upiId').value,
+                gstNumber: document.getElementById('gstNumber').value,
+                privacyPolicyHtml: document.getElementById('privacyPolicy').value,
+                termsHtml: document.getElementById('terms').value,
+                refundPolicyHtml: document.getElementById('refundPolicy').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                contactPhone: document.getElementById('contactPhone').value,
+                youtubeChannel: document.getElementById('youtubeChannel').value,
+                telegramLink: document.getElementById('telegramLink').value
+            };
+            
+            db.collection('siteSettings').doc('settings').set(settingsData, { merge: true })
+                .then(() => {
+                    showToast('Settings saved successfully', 'success');
+                })
+                .catch(error => {
+                    console.error('Error saving settings:', error);
+                    showToast('Failed to save settings', 'error');
+                });
+        }
+
+        // Analytics
+        function loadAnalytics() {
+            // Load revenue chart
+            loadRevenueChart();
+            
+            // Load top products
+            loadTopProducts();
+        }
+
+        function loadRevenueChart() {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            // Destroy existing chart if it exists
+            if (app.revenueChart) {
+                app.revenueChart.destroy();
+            }
+            
+            // Prepare data for the last 7 days
+            const labels = [];
+            const data = [];
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString());
+                
+                // In a real implementation, you would query Firestore for orders on this date
+                // For this demo, we'll use random data
+                data.push(Math.floor(Math.random() * 10000) + 1000);
+            }
+            
+            app.revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: data,
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
+                        borderColor: 'rgba(99, 102, 241, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadTopProducts() {
+            const topProductsContainer = document.getElementById('topProducts');
+            topProductsContainer.innerHTML = '<div class="spinner"></div>';
+            
+            // In a real implementation, you would aggregate order data to find top products
+            // For this demo, we'll use sample data
+            setTimeout(() => {
+                const topProducts = [
+                    { title: 'Physics Notes', sales: 25 },
+                    { title: 'Chemistry Notes', sales: 18 },
+                    { title: 'Biology Notes', sales: 12 }
+                ];
+                
+                let html = '<table class="data-table"><thead><tr><th>Product</th><th>Sales</th></tr></thead><tbody>';
+                
+                topProducts.forEach(product => {
+                    html += `
+                        <tr>
+                            <td>${product.title}</td>
+                            <td>${product.sales}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += '</tbody></table>';
+                topProductsContainer.innerHTML = html;
+            }, 1000);
+        }
+
+        // Export Functions
+        function exportOrders() {
+            if (app.orders.length === 0) {
+                showToast('No orders to export', 'error');
+                return;
+            }
+            
+            // Create CSV content
+            let csvContent = 'Order ID,Customer Email,Date,Amount,Status\n';
+            
+            app.orders.forEach(order => {
+                const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Unknown';
+                csvContent += `${order.orderId},${order.userEmail},${date},${order.amount},${order.status}\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `orders_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            showToast('Orders exported successfully', 'success');
+        }
+
+        function exportAnalytics() {
+            // Create sample analytics data
+            const analyticsData = {
+                totalRevenue: app.orders.reduce((sum, order) => {
+                    return sum + (order.status === 'paid' || order.status === 'fulfilled' ? order.amount || 0 : 0);
+                }, 0),
+                totalOrders: app.orders.length,
+                totalUsers: app.users.length,
+                topProducts: [
+                    { title: 'Physics Notes', sales: 25 },
+                    { title: 'Chemistry Notes', sales: 18 },
+                    { title: 'Biology Notes', sales: 12 }
+                ]
+            };
+            
+            // Create JSON content
+            const jsonContent = JSON.stringify(analyticsData, null, 2);
+            
+            // Create download link
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `analytics_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showToast('Analytics exported successfully', 'success');
+        }
+
+        // Utility Functions
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            let icon = '';
+            switch (type) {
+                case 'success':
+                    icon = '<i class="fas fa-check-circle"></i>';
+                    break;
+                case 'error':
+                    icon = '<i class="fas fa-exclamation-circle"></i>';
+                    break;
+                case 'info':
+                    icon = '<i class="fas fa-info-circle"></i>';
+                    break;
+            }
+            
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            elements.toastContainer.appendChild(toast);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
