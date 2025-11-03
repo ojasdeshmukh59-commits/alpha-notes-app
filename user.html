@@ -650,10 +650,6 @@
             background: var(--success);
         }
 
-        .toast.error {
-            background: var(--danger);
-        }
-
         .toast.warning {
             background: var(--warning);
             color: var(--dark);
@@ -1020,6 +1016,7 @@
   messagingSenderId: "600503443065",
   appId: "1:600503443065:web:e4c4b225745d5ef6b33ea8"
 };
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -1229,9 +1226,7 @@
                 renderProducts(products);
             } catch (error) {
                 console.error('Error loading products:', error);
-                showToast('Failed to load products', 'error');
-                
-                // Load sample products for demo
+                // Removed error popup - just load sample products
                 loadSampleProducts();
             }
         }
@@ -1592,7 +1587,7 @@
                         })
                         .catch(error => {
                             console.error('Error updating order:', error);
-                            showToast('Payment confirmed but failed to update order. Please contact support.', 'error');
+                            // Removed error popup
                         });
                 }, 3000);
             }
@@ -1631,7 +1626,7 @@
                 return orderId;
             } catch (error) {
                 console.error('Error creating order:', error);
-                showToast('Failed to create order. Please try again.', 'error');
+                // Removed error popup
                 return null;
             }
         }
@@ -1667,7 +1662,7 @@
                 renderOrders();
             } catch (error) {
                 console.error('Error loading orders:', error);
-                showToast('Failed to load orders', 'error');
+                // Removed error popup
             }
         }
 
@@ -1934,6 +1929,11 @@
 
         // Toast Notification
         function showToast(message, type = 'info') {
+            // Skip error type toasts completely
+            if (type === 'error') {
+                return;
+            }
+            
             elements.toast.textContent = message;
             elements.toast.className = 'toast show ' + type;
             
