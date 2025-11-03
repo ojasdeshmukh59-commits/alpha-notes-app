@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alpha Notes - Premium Handwritten Study Materials</title>
+    <title>Alpha Notes - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #151520;
-            --bg-card: rgba(30, 30, 45, 0.7);
-            --text-primary: #f0f0ff;
-            --text-secondary: #b0b0c0;
-            --accent-primary: #6366f1;
-            --accent-secondary: #a855f7;
-            --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7);
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #a855f7;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --dark-lighter: #334155;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
-            --border-radius: 12px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -30,97 +31,45 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, var(--dark) 0%, #1a1f3a 100%);
+            color: var(--text);
             min-height: 100vh;
-            padding-bottom: 70px;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 15px;
         }
 
-        /* Glassmorphism effect */
-        .glass {
-            background: rgba(30, 30, 45, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--border-radius);
-        }
-
-        /* Header */
+        /* Header Styles */
         header {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(10, 10, 15, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 0;
         }
 
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
         }
 
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            background: var(--accent-gradient);
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .search-container {
-            flex: 1;
-            max-width: 500px;
-            margin: 0 20px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 10px 40px 10px 15px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .search-btn {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--accent-gradient);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
         }
 
         .header-actions {
@@ -130,831 +79,524 @@
         }
 
         .icon-btn {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.2rem;
-            cursor: pointer;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        .icon-btn:hover {
-            color: var(--accent-primary);
-        }
-
-        .badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--danger);
-            color: white;
-            font-size: 0.7rem;
-            width: 18px;
-            height: 18px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 30px 0;
-            text-align: center;
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero p {
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 30px;
-        }
-
-        /* Categories */
-        .categories {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 10px 0;
-            margin-bottom: 30px;
-            scrollbar-width: none;
-        }
-
-        .categories::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-chip {
-            padding: 8px 16px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            white-space: nowrap;
             cursor: pointer;
-            transition: var(--transition);
+            transition: all 0.3s;
         }
 
-        .category-chip.active {
-            background: var(--accent-gradient);
-            border-color: transparent;
+        .icon-btn:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
         }
 
-        /* Product Grid */
-        .products-section {
-            margin-bottom: 40px;
+        /* Admin Layout */
+        .admin-layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
         }
 
-        .section-header {
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: var(--dark-light);
+            border-right: 1px solid var(--glass-border);
+            padding: 20px 0;
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-item {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: var(--glass);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .section-title {
-            font-size: 1.5rem;
+        .page-title {
+            font-size: 1.8rem;
             font-weight: 600;
         }
 
-        .filter-sort {
+        .page-actions {
             display: flex;
             gap: 10px;
-        }
-
-        .filter-btn, .sort-btn {
-            padding: 8px 12px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .filter-btn:hover, .sort-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .product-card {
-            glass;
-            overflow: hidden;
-            transition: var(--transition);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
-        }
-
-        .product-image {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-        }
-
-        .product-content {
-            padding: 15px;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .product-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .product-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .product-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-        }
-
-        .product-price {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-
-        .product-rating {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            color: var(--warning);
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 10px 15px;
             border-radius: 8px;
             border: none;
-            font-weight: 600;
             cursor: pointer;
-            transition: var(--transition);
-            flex: 1;
-            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .btn-primary {
-            background: var(--accent-gradient);
+            background: var(--primary);
             color: white;
         }
 
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        .btn-secondary:hover {
+            background: var(--dark-lighter);
         }
 
-        /* Product Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            overflow-y: auto;
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
             padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .modal.active {
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 1.5rem;
         }
 
-        .modal-content {
-            glass;
-            max-width: 800px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            border-radius: var(--border-radius);
+        .stat-icon.primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .stat-icon.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .stat-icon.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .stat-icon.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        /* Data Table */
+        .data-table {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 15px 20px;
+            background: var(--dark-lighter);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-weight: 600;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-box {
             position: relative;
         }
 
-        .modal-close {
+        .search-box input {
+            padding: 8px 35px 8px 15px;
+            border-radius: 20px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            outline: none;
+            width: 200px;
+        }
+
+        .search-box button {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--text-primary);
-            font-size: 1.5rem;
+            color: var(--text-dim);
             cursor: pointer;
-            z-index: 10;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--dark-lighter);
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        tbody tr:hover {
+            background: var(--glass);
+        }
+
+        .table-actions-cell {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--primary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal.open .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .modal-body {
             padding: 20px;
         }
 
-        .product-gallery {
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--glass-border);
             display: flex;
+            justify-content: flex-end;
             gap: 10px;
-            margin-bottom: 20px;
-            overflow-x: auto;
         }
 
-        .gallery-thumb {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: var(--transition);
-        }
-
-        .gallery-thumb.active {
-            opacity: 1;
-            border: 2px solid var(--accent-primary);
-        }
-
-        .main-image {
-            width: 100%;
-            height: 300px;
-            object-fit: contain;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .product-details {
-            margin-bottom: 20px;
-        }
-
-        .product-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .tag {
-            padding: 4px 10px;
-            border-radius: 15px;
-            background: rgba(99, 102, 241, 0.2);
-            color: var(--accent-primary);
-            font-size: 0.8rem;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--bg-secondary);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: var(--transition);
-            font-size: 0.8rem;
-        }
-
-        .nav-item.active {
-            color: var(--accent-primary);
-        }
-
-        .nav-item i {
-            font-size: 1.2rem;
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-            padding: 20px 0;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Auth Forms */
-        .auth-container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 30px;
-            glass;
-        }
-
-        .auth-title {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            transition: var(--transition);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .form-submit {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
+        .close-btn {
+            background: none;
             border: none;
-            background: var(--accent-gradient);
-            color: white;
-            font-weight: 600;
+            color: var(--text);
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: var(--transition);
         }
 
-        .form-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .auth-switch {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-secondary);
-        }
-
-        .auth-switch a {
-            color: var(--accent-primary);
-            text-decoration: none;
-        }
-
-        /* Orders Page */
-        .orders-container {
-            margin-top: 20px;
-        }
-
-        .order-card {
-            glass;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .order-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .order-id {
-            font-weight: 600;
-        }
-
-        .order-status {
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-        }
-
-        .status-paid {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--success);
-        }
-
-        .status-failed {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--danger);
-        }
-
-        .order-items {
+        /* Form Styles */
+        .form-group {
             margin-bottom: 15px;
         }
 
-        .order-item {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-
-        .order-item-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-
-        .order-item-details {
-            flex: 1;
-        }
-
-        .order-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .order-total {
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        /* Profile Page */
-        .profile-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .profile-card {
-            glass;
-            padding: 30px;
-            margin-bottom: 20px;
-            border-radius: var(--border-radius);
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--accent-primary);
-        }
-
-        .profile-info h2 {
+        .form-group label {
+            display: block;
             margin-bottom: 5px;
-        }
-
-        .profile-info p {
-            color: var(--text-secondary);
-        }
-
-        /* Settings Page */
-        .settings-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .settings-card {
-            glass;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: var(--border-radius);
-        }
-
-        .settings-title {
-            font-size: 1.2rem;
             font-weight: 600;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .settings-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            outline: none;
         }
 
-        .settings-label {
-            color: var(--text-secondary);
+        .form-control:focus {
+            border-color: var(--primary);
         }
 
-        .toggle-switch {
+        textarea.form-control {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Switch */
+        .switch {
             position: relative;
+            display: inline-block;
             width: 50px;
-            height: 26px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 13px;
-            cursor: pointer;
-            transition: var(--transition);
+            height: 24px;
         }
 
-        .toggle-switch.active {
-            background: var(--accent-primary);
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
 
-        .toggle-slider {
+        .slider {
             position: absolute;
-            top: 3px;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--dark-lighter);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
             left: 3px;
-            width: 20px;
-            height: 20px;
-            background: white;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
             border-radius: 50%;
-            transition: var(--transition);
         }
 
-        .toggle-switch.active .toggle-slider {
-            transform: translateX(24px);
+        input:checked + .slider {
+            background-color: var(--primary);
         }
 
-        /* Toast Notifications */
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
 
+        /* Toast Notification */
         .toast {
-            glass;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--dark-light);
+            color: var(--text);
             padding: 15px 20px;
-            margin-bottom: 10px;
-            border-radius: var(--border-radius);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 250px;
-            animation: slideIn 0.3s ease-out;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        .toast-success {
-            border-left: 4px solid var(--success);
+        .toast.success {
+            background: var(--success);
         }
 
-        .toast-error {
-            border-left: 4px solid var(--danger);
+        .toast.error {
+            background: var(--danger);
         }
 
-        .toast-info {
-            border-left: 4px solid var(--accent-primary);
+        .toast.warning {
+            background: var(--warning);
+            color: var(--dark);
         }
 
         /* Loading Spinner */
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--accent-primary);
+            border: 4px solid var(--glass-border);
+            border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 50px auto;
+            margin: 20px auto;
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        /* File Link Popup */
-        .file-link-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .file-link-popup.active {
-            display: flex;
-        }
-
-        .file-link-content {
-            glass;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            border-radius: var(--border-radius);
+        /* Empty State */
+        .empty-state {
             text-align: center;
+            padding: 40px 20px;
+            color: var(--text-dim);
         }
 
-        .file-link-title {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--success);
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            opacity: 0.5;
         }
 
-        .file-link-input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            margin-bottom: 20px;
-            font-family: monospace;
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+            }
         }
 
-        .file-link-actions {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        /* Order Detail Modal */
-        .order-detail-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .order-detail-modal.active {
-            display: flex;
-        }
-
-        .order-detail-content {
-            glass;
-            padding: 30px;
-            max-width: 600px;
-            width: 90%;
-            border-radius: var(--border-radius);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .order-detail-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .order-detail-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .order-detail-close {
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2rem;
+            .admin-layout {
+                flex-direction: column;
             }
 
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-
-            .header-content {
-                flex-wrap: wrap;
-            }
-
-            .search-container {
-                order: 3;
+            .sidebar {
                 width: 100%;
-                margin: 15px 0 0;
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                position: static;
+                height: auto;
             }
 
-            .modal-content {
-                margin: 10px;
+            .form-row {
+                grid-template-columns: 1fr;
             }
-        }
 
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border-width: 0;
-        }
-
-        /* Focus styles */
-        *:focus-visible {
-            outline: 2px solid var(--accent-primary);
-            outline-offset: 2px;
-        }
-
-        /* Reduced motion */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -965,317 +607,393 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                    <i class="fas fa-book-open"></i>
-                    Alpha Notes
-                </div>
-                <div class="search-container">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search for notes...">
-                    <button class="search-btn" id="searchBtn">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <i class="fas fa-graduation-cap"></i>
+                    Alpha Notes Admin
                 </div>
                 <div class="header-actions">
-                    <button class="icon-btn" id="wishlistBtn" aria-label="Wishlist">
-                        <i class="far fa-heart"></i>
-                        <span class="badge" id="wishlistCount">0</span>
-                    </button>
-                    <button class="icon-btn" id="profileBtn" aria-label="Profile">
+                    <div class="icon-btn" id="notificationBtn">
+                        <i class="far fa-bell"></i>
+                    </div>
+                    <div class="icon-btn" id="profileBtn">
                         <i class="far fa-user"></i>
-                    </button>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Home Page -->
-        <div class="page active" id="homePage">
-            <!-- Hero Section -->
-            <section class="hero">
-                <div class="container">
-                    <h1>Premium Handwritten Study Materials</h1>
-                    <p>Access high-quality handwritten notes for Physics, Chemistry, and Biology. Ace your exams with our comprehensive study materials.</p>
-                </div>
-            </section>
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link active" data-page="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" data-page="products">
+                        <i class="fas fa-box"></i>
+                        <span>Products</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" data-page="orders">
+                        <i class="fas fa-receipt"></i>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" data-page="users">
+                        <i class="fas fa-users"></i>
+                        <span>Users</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
 
-            <!-- Categories -->
-            <section class="container">
-                <div class="categories" id="categoriesContainer">
-                    <div class="category-chip active" data-category="all">All</div>
-                    <div class="category-chip" data-category="physics">Physics</div>
-                    <div class="category-chip" data-category="chemistry">Chemistry</div>
-                    <div class="category-chip" data-category="biology">Biology</div>
-                </div>
-            </section>
-
-            <!-- Featured Products -->
-            <section class="container products-section">
-                <div class="section-header">
-                    <h2 class="section-title">Featured Notes</h2>
-                    <div class="filter-sort">
-                        <button class="filter-btn" id="filterBtn">
-                            <i class="fas fa-filter"></i> Filter
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboardPage" class="page active">
+                <div class="page-header">
+                    <h1 class="page-title">Dashboard</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-secondary" id="refreshBtn">
+                            <i class="fas fa-sync"></i> Refresh
                         </button>
-                        <select class="sort-btn" id="sortSelect">
-                            <option value="featured">Featured</option>
-                            <option value="price-low">Price: Low to High</option>
-                            <option value="price-high">Price: High to Low</option>
-                            <option value="newest">Newest</option>
-                            <option value="rating">Top Rated</option>
-                        </select>
                     </div>
                 </div>
-                <div class="products-grid" id="productsGrid">
-                    <!-- Products will be loaded here -->
-                </div>
-            </section>
-        </div>
 
-        <!-- Wishlist Page -->
-        <div class="page" id="wishlistPage">
-            <div class="container">
-                <h1 class="section-title">My Wishlist</h1>
-                <div class="products-grid" id="wishlistGrid">
-                    <!-- Wishlist items will be loaded here -->
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalProducts">0</div>
+                            <div class="stat-label">Total Products</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalOrders">0</div>
+                            <div class="stat-label">Total Orders</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <div class="stat-info">
+                            <div class="stat-value" id="totalRevenue">₹0</div>
+                            <div class="stat-label">Total Revenue</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Orders -->
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Recent Orders</h3>
+                        <div class="table-actions">
+                            <button class="btn btn-primary" onclick="switchPage('orders')">
+                                <i class="fas fa-eye"></i> View All
+                            </button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersTable">
+                            <!-- Recent orders will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <!-- Orders Page -->
-        <div class="page" id="ordersPage">
-            <div class="container">
-                <h1 class="section-title">My Orders</h1>
-                <div class="orders-container" id="ordersContainer">
-                    <!-- Orders will be loaded here -->
+            <!-- Products Page -->
+            <div id="productsPage" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Products</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="addProductBtn">
+                            <i class="fas fa-plus"></i> Add Product
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Profile Page -->
-        <div class="page" id="profilePage">
-            <div class="container">
-                <div class="profile-container">
-                    <div class="profile-card">
-                        <div class="profile-header">
-                            <img src="https://picsum.photos/seed/avatar/80/80.jpg" alt="Profile" class="profile-avatar" id="profileAvatar">
-                            <div class="profile-info">
-                                <h2 id="profileName">Guest User</h2>
-                                <p id="profileEmail">Not logged in</p>
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">All Products</h3>
+                        <div class="table-actions">
+                            <div class="search-box">
+                                <input type="text" id="productSearch" placeholder="Search products...">
+                                <button><i class="fas fa-search"></i></button>
                             </div>
                         </div>
-                        <div id="profileContent">
-                            <!-- Profile content will be loaded here -->
-                        </div>
                     </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable">
+                            <!-- Products will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <!-- Settings Page -->
-        <div class="page" id="settingsPage">
-            <div class="container">
-                <div class="settings-container">
-                    <div class="settings-card">
-                        <h3 class="settings-title">App Settings</h3>
-                        <div class="settings-item">
-                            <span class="settings-label">Dark Mode</span>
-                            <div class="toggle-switch active" id="darkModeToggle">
-                                <div class="toggle-slider"></div>
+            <!-- Orders Page -->
+            <div id="ordersPage" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Orders</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-secondary" id="exportOrdersBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">All Orders</h3>
+                        <div class="table-actions">
+                            <div class="search-box">
+                                <input type="text" id="orderSearch" placeholder="Search orders...">
+                                <button><i class="fas fa-search"></i></button>
                             </div>
                         </div>
-                        <div class="settings-item">
-                            <span class="settings-label">Push Notifications</span>
-                            <div class="toggle-switch" id="notificationToggle">
-                                <div class="toggle-slider"></div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Products</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTable">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="usersPage" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Users</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-secondary" id="exportUsersBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">All Users</h3>
+                        <div class="table-actions">
+                            <div class="search-box">
+                                <input type="text" id="userSearch" placeholder="Search users...">
+                                <button><i class="fas fa-search"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="settings-card">
-                        <h3 class="settings-title">Account</h3>
-                        <div class="settings-item">
-                            <span class="settings-label">Change Password</span>
-                            <button class="btn btn-secondary">Change</button>
-                        </div>
-                        <div class="settings-item">
-                            <span class="settings-label">Privacy Policy</span>
-                            <button class="btn btn-secondary">View</button>
-                        </div>
-                        <div class="settings-item">
-                            <span class="settings-label">Terms of Service</span>
-                            <button class="btn btn-secondary">View</button>
-                        </div>
-                    </div>
-                    <div class="settings-card">
-                        <h3 class="settings-title">Support</h3>
-                        <div class="settings-item">
-                            <span class="settings-label">Contact Us</span>
-                            <button class="btn btn-secondary">Contact</button>
-                        </div>
-                        <div class="settings-item">
-                            <span class="settings-label">FAQ</span>
-                            <button class="btn btn-secondary">View</button>
-                        </div>
-                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Registered</th>
+                                <th>Orders</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <!-- Auth Pages -->
-        <div class="page" id="loginPage">
-            <div class="container">
-                <div class="auth-container">
-                    <h2 class="auth-title">Login to Alpha Notes</h2>
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label class="form-label" for="loginEmail">Email</label>
-                            <input type="email" class="form-input" id="loginEmail" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label" for="loginPassword">Password</label>
-                            <input type="password" class="form-input" id="loginPassword" required>
-                        </div>
-                        <button type="submit" class="form-submit">Login</button>
-                    </form>
-                    <div class="auth-switch">
-                        Don't have an account? <a href="#" id="showRegister">Register</a>
+            <!-- Settings Page -->
+            <div id="settingsPage" class="page">
+                <div class="page-header">
+                    <h1 class="page-title">Settings</h1>
+                    <div class="page-actions">
+                        <button class="btn btn-primary" id="saveSettingsBtn">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="page" id="registerPage">
-            <div class="container">
-                <div class="auth-container">
-                    <h2 class="auth-title">Register for Alpha Notes</h2>
-                    <form id="registerForm">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3 class="table-title">Site Settings</h3>
+                    </div>
+                    <div class="modal-body">
                         <div class="form-group">
-                            <label class="form-label" for="registerName">Full Name</label>
-                            <input type="text" class="form-input" id="registerName" required>
+                            <label for="siteTitle">Site Title</label>
+                            <input type="text" id="siteTitle" class="form-control" value="Alpha Notes">
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="registerEmail">Email</label>
-                            <input type="email" class="form-input" id="registerEmail" required>
+                            <label for="siteEmail">Contact Email</label>
+                            <input type="email" id="siteEmail" class="form-control" value="contact@alphanotes.com">
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="registerPassword">Password</label>
-                            <input type="password" class="form-input" id="registerPassword" required>
+                            <label for="upiId">UPI ID</label>
+                            <input type="text" id="upiId" class="form-control" value="yourupi@ybl">
                         </div>
                         <div class="form-group">
-                            <label class="form-label" for="registerConfirmPassword">Confirm Password</label>
-                            <input type="password" class="form-input" id="registerConfirmPassword" required>
+                            <label for="announcement">Announcement</label>
+                            <textarea id="announcement" class="form-control" rows="3">Welcome to Alpha Notes! Get premium study materials for Physics, Chemistry, and Biology.</textarea>
                         </div>
-                        <button type="submit" class="form-submit">Register</button>
-                    </form>
-                    <div class="auth-switch">
-                        Already have an account? <a href="#" id="showLogin">Login</a>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="maintenanceMode"> Maintenance Mode
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
+    </div>
 
     <!-- Product Modal -->
     <div class="modal" id="productModal">
         <div class="modal-content">
-            <button class="modal-close" id="modalClose">
-                <i class="fas fa-times"></i>
-            </button>
+            <div class="modal-header">
+                <h2 id="productModalTitle">Add Product</h2>
+                <button class="close-btn" id="closeProductModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
             <div class="modal-body">
-                <img src="" alt="Product" class="main-image" id="modalMainImage">
-                <div class="product-gallery" id="modalGallery">
-                    <!-- Gallery thumbnails will be loaded here -->
-                </div>
-                <div class="product-details">
-                    <h2 id="modalTitle"></h2>
-                    <div class="product-rating" id="modalRating">
-                        <!-- Rating will be loaded here -->
+                <form id="productForm">
+                    <div class="form-group">
+                        <label for="productTitle">Title</label>
+                        <input type="text" id="productTitle" class="form-control" required>
                     </div>
-                    <p id="modalDescription"></p>
-                    <div class="product-tags" id="modalTags">
-                        <!-- Tags will be loaded here -->
+                    <div class="form-group">
+                        <label for="productCategory">Category</label>
+                        <select id="productCategory" class="form-control" required>
+                            <option value="physics">Physics</option>
+                            <option value="chemistry">Chemistry</option>
+                            <option value="biology">Biology</option>
+                        </select>
                     </div>
-                    <div class="product-meta">
-                        <div class="product-price" id="modalPrice"></div>
-                        <div id="modalStock"></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="productPrice">Price (₹)</label>
+                            <input type="number" id="productPrice" class="form-control" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="productStock">Stock</label>
+                            <input type="number" id="productStock" class="form-control" min="0" required>
+                        </div>
                     </div>
-                    <div class="product-actions">
-                        <button class="btn btn-primary" id="modalBuyNow">Buy Now</button>
-                        <button class="btn btn-secondary" id="modalAddToWishlist">
-                            <i class="far fa-heart"></i> Wishlist
-                        </button>
+                    <div class="form-group">
+                        <label for="productDescription">Description</label>
+                        <textarea id="productDescription" class="form-control" rows="4" required></textarea>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="productImage">Image URL</label>
+                        <input type="text" id="productImage" class="form-control" placeholder="https://freeimage.host/your-image.jpg">
+                        <small>Upload images to <a href="https://freeimage.host" target="_blank">FreeImage.host</a> and paste the direct link here.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="productTags">Tags (comma separated)</label>
+                        <input type="text" id="productTags" class="form-control" placeholder="e.g. mechanics, formulas, diagrams">
+                    </div>
+                    <div class="form-group">
+                        <label for="productPdf">PDF URL</label>
+                        <input type="text" id="productPdf" class="form-control" placeholder="https://example.com/notes.pdf">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="productVisible" checked> Visible
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelProductBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveProductBtn">Save</button>
             </div>
         </div>
     </div>
 
     <!-- Order Detail Modal -->
-    <div class="order-detail-modal" id="orderDetailModal">
-        <div class="order-detail-content">
-            <div class="order-detail-header">
-                <h2 class="order-detail-title">Order Details</h2>
-                <button class="order-detail-close" id="orderDetailClose">
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Order Details</h2>
+                <button class="close-btn" id="closeOrderModalBtn">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div id="orderDetailBody">
+            <div class="modal-body" id="orderModalBody">
                 <!-- Order details will be loaded here -->
             </div>
-        </div>
-    </div>
-
-    <!-- File Link Popup -->
-    <div class="file-link-popup" id="fileLinkPopup">
-        <div class="file-link-content">
-            <h3 class="file-link-title">
-                <i class="fas fa-check-circle"></i> Order Successful!
-            </h3>
-            <p style="margin-bottom: 20px;">Your PDF notes are ready to download. Here's your download link:</p>
-            <input type="text" class="file-link-input" id="fileLinkInput" readonly>
-            <div class="file-link-actions">
-                <button class="btn btn-primary" id="copyLinkBtn">
-                    <i class="fas fa-copy"></i> Copy Link
-                </button>
-                <button class="btn btn-secondary" id="openLinkBtn">
-                    <i class="fas fa-external-link-alt"></i> Open
-                </button>
+            <div class="modal-footer" id="orderModalFooter">
+                <!-- Order actions will be loaded here -->
             </div>
-            <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" id="closeFileLinkBtn">Close</button>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active" data-page="home">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-        </a>
-        <a href="#" class="nav-item" data-page="wishlist">
-            <i class="far fa-heart"></i>
-            <span>Wishlist</span>
-        </a>
-        <a href="#" class="nav-item" data-page="profile">
-            <i class="far fa-user"></i>
-            <span>Profile</span>
-        </a>
-        <a href="#" class="nav-item" data-page="settings">
-            <i class="fas fa-cog"></i>
-            <span>Settings</span>
-        </a>
-    </nav>
-
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Configuration - Replace with your config
+        // Firebase Configuration
         const firebaseConfig = {
   apiKey: "AIzaSyCwll-R6_LNPhCt6bFitr2zu_o2XHM5EqU",
   authDomain: "alpha-notes-app-550d3.firebaseapp.com",
@@ -1290,970 +1008,929 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-        const storage = firebase.storage();
 
         // App State
-        const app = {
-            user: null,
-            products: [],
-            wishlist: [],
-            orders: [],
-            currentCategory: 'all',
-            currentSort: 'featured',
-            searchQuery: '',
-            selectedProduct: null,
-            isOrdersLoading: false,
-            ordersListener: null
-        };
+        let currentUser = null;
+        let products = [];
+        let orders = [];
+        let users = [];
+        let currentProduct = null;
+        let currentOrder = null;
+        let currentPage = 'dashboard';
 
         // DOM Elements
         const elements = {
-            pages: document.querySelectorAll('.page'),
-            navItems: document.querySelectorAll('.nav-item'),
-            productsGrid: document.getElementById('productsGrid'),
-            wishlistGrid: document.getElementById('wishlistGrid'),
-            ordersContainer: document.getElementById('ordersContainer'),
+            // Pages
+            dashboardPage: document.getElementById('dashboardPage'),
+            productsPage: document.getElementById('productsPage'),
+            ordersPage: document.getElementById('ordersPage'),
+            usersPage: document.getElementById('usersPage'),
+            settingsPage: document.getElementById('settingsPage'),
+            
+            // Sidebar
+            sidebarLinks: document.querySelectorAll('.sidebar-link'),
+            
+            // Dashboard
+            totalProducts: document.getElementById('totalProducts'),
+            totalOrders: document.getElementById('totalOrders'),
+            totalUsers: document.getElementById('totalUsers'),
+            totalRevenue: document.getElementById('totalRevenue'),
+            recentOrdersTable: document.getElementById('recentOrdersTable'),
+            refreshBtn: document.getElementById('refreshBtn'),
+            
+            // Products
+            addProductBtn: document.getElementById('addProductBtn'),
+            productsTable: document.getElementById('productsTable'),
+            productSearch: document.getElementById('productSearch'),
+            
+            // Orders
+            ordersTable: document.getElementById('ordersTable'),
+            orderSearch: document.getElementById('orderSearch'),
+            exportOrdersBtn: document.getElementById('exportOrdersBtn'),
+            
+            // Users
+            usersTable: document.getElementById('usersTable'),
+            userSearch: document.getElementById('userSearch'),
+            exportUsersBtn: document.getElementById('exportUsersBtn'),
+            
+            // Settings
+            siteTitle: document.getElementById('siteTitle'),
+            siteEmail: document.getElementById('siteEmail'),
+            upiId: document.getElementById('upiId'),
+            announcement: document.getElementById('announcement'),
+            maintenanceMode: document.getElementById('maintenanceMode'),
+            saveSettingsBtn: document.getElementById('saveSettingsBtn'),
+            
+            // Modals
             productModal: document.getElementById('productModal'),
-            modalMainImage: document.getElementById('modalMainImage'),
-            modalGallery: document.getElementById('modalGallery'),
-            modalTitle: document.getElementById('modalTitle'),
-            modalDescription: document.getElementById('modalDescription'),
-            modalPrice: document.getElementById('modalPrice'),
-            modalRating: document.getElementById('modalRating'),
-            modalTags: document.getElementById('modalTags'),
-            modalStock: document.getElementById('modalStock'),
-            searchInput: document.getElementById('searchInput'),
-            categoriesContainer: document.getElementById('categoriesContainer'),
-            sortSelect: document.getElementById('sortSelect'),
-            toastContainer: document.getElementById('toastContainer'),
-            profileName: document.getElementById('profileName'),
-            profileEmail: document.getElementById('profileEmail'),
-            profileAvatar: document.getElementById('profileAvatar'),
-            profileContent: document.getElementById('profileContent'),
-            loginForm: document.getElementById('loginForm'),
-            registerForm: document.getElementById('registerForm'),
-            fileLinkPopup: document.getElementById('fileLinkPopup'),
-            fileLinkInput: document.getElementById('fileLinkInput'),
-            orderDetailModal: document.getElementById('orderDetailModal'),
-            orderDetailBody: document.getElementById('orderDetailBody')
+            closeProductModalBtn: document.getElementById('closeProductModalBtn'),
+            productForm: document.getElementById('productForm'),
+            productModalTitle: document.getElementById('productModalTitle'),
+            cancelProductBtn: document.getElementById('cancelProductBtn'),
+            saveProductBtn: document.getElementById('saveProductBtn'),
+            
+            orderModal: document.getElementById('orderModal'),
+            closeOrderModalBtn: document.getElementById('closeOrderModalBtn'),
+            orderModalBody: document.getElementById('orderModalBody'),
+            orderModalFooter: document.getElementById('orderModalFooter'),
+            
+            // Toast
+            toast: document.getElementById('toast')
         };
 
         // Initialize App
-        document.addEventListener('DOMContentLoaded', () => {
+        function initApp() {
             // Check authentication state
             auth.onAuthStateChanged(user => {
-                app.user = user;
-                updateAuthUI();
-                loadUserData();
+                if (user) {
+                    currentUser = user;
+                    // Check if user is admin
+                    checkAdminStatus();
+                } else {
+                    // Auto-login with hardcoded admin credentials
+                    autoLoginAdmin();
+                }
             });
-
-            // Load initial data
-            loadProducts();
-            loadWishlistFromStorage();
-
-            // Setup event listeners
+            
+            // Set up event listeners
             setupEventListeners();
-        });
+        }
+
+        // Auto-login Admin
+        function autoLoginAdmin() {
+            const adminEmail = 'ojasdeshmukh59@gmail.com';
+            const adminPassword = 'ojasaayu';
+            
+            auth.signInWithEmailAndPassword(adminEmail, adminPassword)
+                .then(userCredential => {
+                    currentUser = userCredential.user;
+                    checkAdminStatus();
+                })
+                .catch(error => {
+                    console.error('Admin login failed:', error);
+                    showToast('Admin login failed. Please check credentials.', 'error');
+                });
+        }
+
+        // Check Admin Status
+        async function checkAdminStatus() {
+            if (!currentUser) return;
+            
+            try {
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                
+                if (userDoc.exists && userDoc.data().isAdmin) {
+                    // User is admin, load data
+                    loadDashboardData();
+                    loadProducts();
+                    loadOrders();
+                    loadUsers();
+                    loadSettings();
+                } else {
+                    // User is not admin, create admin document
+                    await db.collection('users').doc(currentUser.uid).set({
+                        email: currentUser.email,
+                        isAdmin: true,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // Load data
+                    loadDashboardData();
+                    loadProducts();
+                    loadOrders();
+                    loadUsers();
+                    loadSettings();
+                }
+            } catch (error) {
+                console.error('Error checking admin status:', error);
+                showToast('Failed to verify admin status', 'error');
+            }
+        }
 
         // Setup Event Listeners
         function setupEventListeners() {
-            // Navigation
-            elements.navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
+            // Sidebar navigation
+            elements.sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
                     e.preventDefault();
-                    const page = item.dataset.page;
-                    navigateToPage(page);
+                    const page = link.getAttribute('data-page');
+                    switchPage(page);
+                    
+                    // Update active link
+                    elements.sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
                 });
             });
-
-            // Product Modal
-            document.getElementById('modalClose').addEventListener('click', () => {
-                elements.productModal.classList.remove('active');
+            
+            // Refresh button
+            elements.refreshBtn.addEventListener('click', () => {
+                loadDashboardData();
+                showToast('Dashboard refreshed', 'success');
             });
-
-            // Search
-            elements.searchInput.addEventListener('input', debounce(handleSearch, 300));
-            document.getElementById('searchBtn').addEventListener('click', handleSearch);
-
-            // Categories
-            elements.categoriesContainer.addEventListener('click', (e) => {
-                if (e.target.classList.contains('category-chip')) {
-                    // Remove active class from all chips
-                    document.querySelectorAll('.category-chip').forEach(chip => {
-                        chip.classList.remove('active');
-                    });
-                    // Add active class to clicked chip
-                    e.target.classList.add('active');
-                    // Update current category and filter products
-                    app.currentCategory = e.target.dataset.category;
-                    filterAndRenderProducts();
+            
+            // Product search
+            elements.productSearch.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchProducts();
                 }
             });
-
-            // Sort
-            elements.sortSelect.addEventListener('change', (e) => {
-                app.currentSort = e.target.value;
-                filterAndRenderProducts();
-            });
-
-            // Auth Forms
-            elements.loginForm.addEventListener('submit', handleLogin);
-            elements.registerForm.addEventListener('submit', handleRegister);
-            document.getElementById('showRegister').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPage('register');
-            });
-            document.getElementById('showLogin').addEventListener('click', (e) => {
-                e.preventDefault();
-                navigateToPage('login');
-            });
-
-            // Profile Button
-            document.getElementById('profileBtn').addEventListener('click', () => {
-                if (app.user) {
-                    navigateToPage('profile');
-                } else {
-                    navigateToPage('login');
+            
+            // Order search
+            elements.orderSearch.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchOrders();
                 }
             });
-
-            // Modal Actions
-            document.getElementById('modalBuyNow').addEventListener('click', () => {
-                if (app.selectedProduct) {
-                    buyNow(app.selectedProduct);
-                    elements.productModal.classList.remove('active');
+            
+            // User search
+            elements.userSearch.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchUsers();
                 }
             });
-
-            document.getElementById('modalAddToWishlist').addEventListener('click', () => {
-                if (app.selectedProduct) {
-                    toggleWishlist(app.selectedProduct.id);
-                }
+            
+            // Add product button
+            elements.addProductBtn.addEventListener('click', () => {
+                openProductModal();
             });
-
-            // Order Detail Modal
-            document.getElementById('orderDetailClose').addEventListener('click', () => {
-                elements.orderDetailModal.classList.remove('active');
-            });
-
-            // File Link Popup Actions
-            document.getElementById('copyLinkBtn').addEventListener('click', () => {
-                elements.fileLinkInput.select();
-                document.execCommand('copy');
-                showToast('Link copied to clipboard!', 'success');
-            });
-
-            document.getElementById('openLinkBtn').addEventListener('click', () => {
-                window.open(elements.fileLinkInput.value, '_blank');
-            });
-
-            document.getElementById('closeFileLinkBtn').addEventListener('click', () => {
-                elements.fileLinkPopup.classList.remove('active');
-            });
-
-            // Dark Mode Toggle
-            document.getElementById('darkModeToggle').addEventListener('click', function() {
-                this.classList.toggle('active');
-                // In this dark-mode-first app, we would implement light mode here if needed
-                showToast('Dark mode is always enabled for the best experience', 'info');
-            });
+            
+            // Product modal
+            elements.closeProductModalBtn.addEventListener('click', closeProductModal);
+            elements.cancelProductBtn.addEventListener('click', closeProductModal);
+            elements.saveProductBtn.addEventListener('click', saveProduct);
+            
+            // Order modal
+            elements.closeOrderModalBtn.addEventListener('click', closeOrderModal);
+            
+            // Export buttons
+            elements.exportOrdersBtn.addEventListener('click', exportOrders);
+            elements.exportUsersBtn.addEventListener('click', exportUsers);
+            
+            // Save settings
+            elements.saveSettingsBtn.addEventListener('click', saveSettings);
         }
 
-        // Navigation
-        function navigateToPage(pageName) {
+        // Page Navigation
+        function switchPage(pageId) {
             // Hide all pages
-            elements.pages.forEach(page => {
+            document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
             });
-
-            // Remove active class from all nav items
-            elements.navItems.forEach(item => {
-                item.classList.remove('active');
-            });
-
+            
             // Show selected page
-            const selectedPage = document.getElementById(`${pageName}Page`);
-            if (selectedPage) {
-                selectedPage.classList.add('active');
-            }
-
-            // Add active class to selected nav item
-            const selectedNavItem = document.querySelector(`.nav-item[data-page="${pageName}"]`);
-            if (selectedNavItem) {
-                selectedNavItem.classList.add('active');
-            }
-
-            // Load page-specific data
-            if (pageName === 'wishlist') {
-                renderWishlist();
-            } else if (pageName === 'orders') {
-                loadOrders();
-            } else if (pageName === 'profile') {
-                renderProfile();
-            }
+            document.getElementById(pageId + 'Page').classList.add('active');
+            currentPage = pageId;
         }
 
-        // Authentication
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    showToast('Login successful!', 'success');
-                    navigateToPage('home');
-                })
-                .catch(error => {
-                    showToast(error.message, 'error');
+        // Load Dashboard Data
+        async function loadDashboardData() {
+            try {
+                // Load products count
+                const productsSnapshot = await db.collection('products').get();
+                elements.totalProducts.textContent = productsSnapshot.size;
+                
+                // Load orders count and revenue
+                const ordersSnapshot = await db.collection('orders').get();
+                elements.totalOrders.textContent = ordersSnapshot.size;
+                
+                let totalRevenue = 0;
+                ordersSnapshot.forEach(doc => {
+                    totalRevenue += doc.data().amount || 0;
                 });
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
-
-            if (password !== confirmPassword) {
-                showToast('Passwords do not match', 'error');
-                return;
+                elements.totalRevenue.textContent = '₹' + totalRevenue;
+                
+                // Load users count
+                const usersSnapshot = await db.collection('users').get();
+                elements.totalUsers.textContent = usersSnapshot.size;
+                
+                // Load recent orders
+                loadRecentOrders();
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showToast('Failed to load dashboard data', 'error');
             }
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .then(userCredential => {
-                    // Update profile
-                    return userCredential.user.updateProfile({
-                        displayName: name
-                    });
-                })
-                .then(() => {
-                    // Create user document in Firestore
-                    return db.collection('users').doc(auth.currentUser.uid).set({
-                        displayName: name,
-                        email: email,
-                        isAdmin: false,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        wishlist: []
-                    });
-                })
-                .then(() => {
-                    showToast('Registration successful!', 'success');
-                    navigateToPage('home');
-                })
-                .catch(error => {
-                    showToast(error.message, 'error');
-                });
         }
 
-        function updateAuthUI() {
-            if (app.user) {
-                elements.profileName.textContent = app.user.displayName || 'User';
-                elements.profileEmail.textContent = app.user.email;
-                if (app.user.photoURL) {
-                    elements.profileAvatar.src = app.user.photoURL;
+        // Load Recent Orders
+        async function loadRecentOrders() {
+            try {
+                const snapshot = await db.collection('orders')
+                    .orderBy('createdAt', 'desc')
+                    .limit(5)
+                    .get();
+                
+                elements.recentOrdersTable.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    elements.recentOrdersTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="empty-state">No orders found</td>
+                        </tr>
+                    `;
+                    return;
                 }
-            } else {
-                elements.profileName.textContent = 'Guest User';
-                elements.profileEmail.textContent = 'Not logged in';
-                elements.profileAvatar.src = 'https://picsum.photos/seed/avatar/80/80.jpg';
-            }
-        }
-
-        // Load User Data
-        function loadUserData() {
-            if (!app.user) return;
-
-            // Load user profile
-            db.collection('users').doc(app.user.uid).get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const userData = doc.data();
-                        app.wishlist = userData.wishlist || [];
-                        updateWishlistCount();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading user data:', error);
+                
+                snapshot.forEach(doc => {
+                    const order = doc.data();
+                    const row = document.createElement('tr');
+                    
+                    const statusClass = order.status === 'paid' ? 'status-paid' : 
+                                       order.status === 'pending' ? 'status-pending' : 'status-failed';
+                    
+                    row.innerHTML = `
+                        <td>${order.orderId}</td>
+                        <td>${order.userEmail || 'N/A'}</td>
+                        <td>₹${order.amount || 0}</td>
+                        <td><span class="order-status ${statusClass}">${order.status}</span></td>
+                        <td>${order.createdAt ? new Date(order.createdAt.toDate()).toLocaleDateString() : 'N/A'}</td>
+                    `;
+                    
+                    elements.recentOrdersTable.appendChild(row);
                 });
-
-            // Load orders
-            loadOrders();
+            } catch (error) {
+                console.error('Error loading recent orders:', error);
+            }
         }
 
-        // Products
-        function loadProducts() {
-            // Show loading state
-            elements.productsGrid.innerHTML = '<div class="spinner"></div>';
-
-            db.collection('products').where('visible', '==', true).get()
-                .then(querySnapshot => {
-                    app.products = [];
-                    querySnapshot.forEach(doc => {
-                        app.products.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
+        // Load Products
+        async function loadProducts() {
+            try {
+                const snapshot = await db.collection('products').get();
+                
+                products = [];
+                snapshot.forEach(doc => {
+                    products.push({
+                        id: doc.id,
+                        ...doc.data()
                     });
-                    filterAndRenderProducts();
-                })
-                .catch(error => {
-                    console.error('Error loading products:', error);
-                    showToast('Failed to load products', 'error');
-                    elements.productsGrid.innerHTML = '<p>Failed to load products. Please try again later.</p>';
                 });
+                
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showToast('Failed to load products', 'error');
+            }
         }
 
-        function filterAndRenderProducts() {
-            let filteredProducts = [...app.products];
-
-            // Filter by category
-            if (app.currentCategory !== 'all') {
-                filteredProducts = filteredProducts.filter(product => 
-                    product.category === app.currentCategory
-                );
-            }
-
-            // Filter by search query
-            if (app.searchQuery) {
-                const query = app.searchQuery.toLowerCase();
-                filteredProducts = filteredProducts.filter(product => 
-                    product.title.toLowerCase().includes(query) ||
-                    product.description.toLowerCase().includes(query) ||
-                    (product.tags && product.tags.some(tag => tag.toLowerCase().includes(query)))
-                );
-            }
-
-            // Sort products
-            switch (app.currentSort) {
-                case 'price-low':
-                    filteredProducts.sort((a, b) => a.priceINR - b.priceINR);
-                    break;
-                case 'price-high':
-                    filteredProducts.sort((a, b) => b.priceINR - a.priceINR);
-                    break;
-                case 'newest':
-                    filteredProducts.sort((a, b) => {
-                        const dateA = a.createdAt ? a.createdAt.toDate() : new Date(0);
-                        const dateB = b.createdAt ? b.createdAt.toDate() : new Date(0);
-                        return dateB - dateA;
-                    });
-                    break;
-                case 'rating':
-                    filteredProducts.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-                    break;
-                case 'name':
-                    filteredProducts.sort((a, b) => a.title.localeCompare(b.title));
-                    break;
-                // 'featured' is default, no sorting needed
-            }
-
-            renderProducts(filteredProducts);
-        }
-
-        function renderProducts(products) {
+        // Render Products
+        function renderProducts() {
+            elements.productsTable.innerHTML = '';
+            
             if (products.length === 0) {
-                elements.productsGrid.innerHTML = '<p>No products found matching your criteria.</p>';
+                elements.productsTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">No products found</td>
+                    </tr>
+                `;
                 return;
             }
-
-            elements.productsGrid.innerHTML = products.map(product => `
-                <div class="product-card" data-id="${product.id}">
-                    <img src="${product.thumbnails && product.thumbnails.length > 0 ? product.thumbnails[0] : 'https://picsum.photos/seed/product/300/200.jpg'}" 
-                         alt="${product.title}" class="product-image">
-                    <div class="product-content">
-                        <h3 class="product-title">${product.title}</h3>
-                        <p class="product-description">${stripHtml(product.descriptionHTML || product.description || '')}</p>
-                        <div class="product-meta">
-                            <div class="product-price">₹${product.priceINR}</div>
-                            <div class="product-rating">
-                                ${renderStars(product.rating || 0)}
-                                <span>${product.rating || 0}</span>
-                            </div>
-                        </div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary" onclick="viewProduct('${product.id}')">View</button>
-                            <button class="btn btn-secondary" onclick="quickBuyNow('${product.id}')">
-                                <i class="fas fa-bolt"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function viewProduct(productId) {
-            const product = app.products.find(p => p.id === productId);
-            if (!product) return;
-
-            app.selectedProduct = product;
-
-            // Update modal content
-            elements.modalMainImage.src = product.thumbnails && product.thumbnails.length > 0 ? 
-                product.thumbnails[0] : 'https://picsum.photos/seed/product/600/400.jpg';
-            elements.modalTitle.textContent = product.title;
-            elements.modalDescription.innerHTML = product.descriptionHTML || product.description || '';
-            elements.modalPrice.textContent = `₹${product.priceINR}`;
-            elements.modalRating.innerHTML = `${renderStars(product.rating || 0)} <span>${product.rating || 0}</span>`;
-            elements.modalStock.textContent = product.stock > 0 ? `In Stock (${product.stock})` : 'Out of Stock';
-
-            // Update gallery
-            if (product.thumbnails && product.thumbnails.length > 1) {
-                elements.modalGallery.innerHTML = product.thumbnails.map((thumb, index) => `
-                    <img src="${thumb}" alt="Product Image ${index + 1}" 
-                         class="gallery-thumb ${index === 0 ? 'active' : ''}"
-                         onclick="changeMainImage('${thumb}', this)">
-                `).join('');
-            } else {
-                elements.modalGallery.innerHTML = '';
-            }
-
-            // Update tags
-            if (product.tags && product.tags.length > 0) {
-                elements.modalTags.innerHTML = product.tags.map(tag => `
-                    <span class="tag">${tag}</span>
-                `).join('');
-            } else {
-                elements.modalTags.innerHTML = '';
-            }
-
-            // Update wishlist button
-            const isInWishlist = app.wishlist.includes(productId);
-            document.getElementById('modalAddToWishlist').innerHTML = isInWishlist ? 
-                '<i class="fas fa-heart"></i> Remove from Wishlist' : 
-                '<i class="far fa-heart"></i> Add to Wishlist';
-
-            // Show modal
-            elements.productModal.classList.add('active');
-        }
-
-        function changeMainImage(src, element) {
-            elements.modalMainImage.src = src;
-            document.querySelectorAll('.gallery-thumb').forEach(thumb => {
-                thumb.classList.remove('active');
-            });
-            element.classList.add('active');
-        }
-
-        function quickBuyNow(productId) {
-            const product = app.products.find(p => p.id === productId);
-            if (product) {
-                buyNow(product);
-            }
-        }
-
-        // Buy Now Function
-        function buyNow(product) {
-            if (!app.user) {
-                showToast('Please login to purchase', 'error');
-                navigateToPage('login');
-                return;
-            }
-
-            const orderId = `ORD${Date.now()}`;
             
-            const orderData = {
-                orderId: orderId,
-                userId: app.user.uid,
-                userEmail: app.user.email,
-                products: [{
-                    id: product.id,
-                    title: product.title,
-                    price: product.priceINR,
-                    quantity: 1,
-                    downloadLink: product.downloadLink
-                }],
-                amount: product.priceINR,
-                status: product.priceINR === 0 ? 'paid' : 'pending',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            // Add order to Firestore
-            db.collection('orders').add(orderData)
-                .then(docRef => {
-                    const orderId = docRef.id;
-                    
-                    // Add to local orders array immediately
-                    const newOrder = {
-                        id: orderId,
-                        ...orderData
-                    };
-                    app.orders.unshift(newOrder);
-                    
-                    if (product.priceINR === 0) {
-                        // For free products, mark as paid immediately
-                        return docRef.update({ 
-                            status: 'paid', 
-                            paidAt: firebase.firestore.FieldValue.serverTimestamp() 
-                        }).then(() => {
-                            newOrder.status = 'paid';
-                            newOrder.paidAt = new Date();
-                            
-                            // Show file link popup for free products
-                            showFileLinkPopup([product]);
-                            
-                            showToast('Order placed successfully!', 'success');
-                        });
-                    } else {
-                        // For paid products, initiate payment
-                        return initiatePayment(orderId, product.priceINR, orderData.orderId, [product]);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error creating order:', error);
-                    showToast('Failed to create order. Please try again.', 'error');
-                });
-        }
-
-        function initiatePayment(orderId, amount, orderNumber, products) {
-            // In a real implementation, you would integrate with a payment gateway like Razorpay
-            // For this demo, we'll simulate payment success
-            
-            showToast('Processing payment...', 'info');
-            
-            // Simulate payment processing
-            setTimeout(() => {
-                // Update order status to paid
-                db.collection('orders').doc(orderId).update({
-                    status: 'paid',
-                    paidAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    paymentInfo: {
-                        method: 'UPI',
-                        transactionId: `TXN${Date.now()}`
-                    }
-                })
-                .then(() => {
-                    // Update local order
-                    const orderIndex = app.orders.findIndex(o => o.id === orderId);
-                    if (orderIndex >= 0) {
-                        app.orders[orderIndex].status = 'paid';
-                        app.orders[orderIndex].paidAt = new Date();
-                    }
-                    
-                    // Show file link popup
-                    showFileLinkPopup(products);
-                    
-                    showToast('Payment successful! Your order is confirmed.', 'success');
-                })
-                .catch(error => {
-                    console.error('Error updating order:', error);
-                    showToast('Payment processed but failed to update order. Please contact support.', 'error');
-                });
-            }, 2000);
-        }
-
-        function showFileLinkPopup(products) {
-            // Collect all download links
-            const downloadLinks = [];
             products.forEach(product => {
-                if (product.downloadLink) {
-                    downloadLinks.push(product.downloadLink);
-                }
-            });
-            
-            if (downloadLinks.length > 0) {
-                // Show the first download link (or combine multiple if needed)
-                elements.fileLinkInput.value = downloadLinks[0];
-                elements.fileLinkPopup.classList.add('active');
-            } else {
-                // If no download link, show a message
-                showToast('Order confirmed! Download links will be sent to your email.', 'success');
-            }
-        }
-
-        // Orders
-        function loadOrders() {
-            if (!app.user) {
-                elements.ordersContainer.innerHTML = '<p>Please login to view your orders</p>';
-                return;
-            }
-
-            // Prevent multiple simultaneous loads
-            if (app.isOrdersLoading) {
-                return;
-            }
-
-            // Detach existing listener if any
-            if (app.ordersListener) {
-                app.ordersListener();
-            }
-
-            app.isOrdersLoading = true;
-            elements.ordersContainer.innerHTML = '<div class="spinner"></div>';
-
-            // Use a real-time listener for better performance
-            app.ordersListener = db.collection('orders')
-                .where('userId', '==', app.user.uid)
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    app.orders = [];
-                    snapshot.forEach(doc => {
-                        app.orders.push({
-                            id: doc.id,
-                            ...doc.data()
-                        });
-                    });
-                    renderOrders();
-                    app.isOrdersLoading = false;
-                }, error => {
-                    console.error('Error loading orders:', error);
-                    // Don't show error toast on load, just log it
-                    elements.ordersContainer.innerHTML = '<p>No orders found</p>';
-                    app.isOrdersLoading = false;
-                });
-        }
-
-        function renderOrders() {
-            if (app.orders.length === 0) {
-                elements.ordersContainer.innerHTML = '<p>You have no orders yet</p>';
-                return;
-            }
-
-            elements.ordersContainer.innerHTML = app.orders.map(order => {
-                const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Unknown';
-                const statusClass = `status-${order.status}`;
-                
-                return `
-                    <div class="order-card" onclick="viewOrderDetail('${order.id}')">
-                        <div class="order-header">
-                            <div class="order-id">Order #${order.orderId}</div>
-                            <div class="order-status ${statusClass}">${order.status}</div>
-                        </div>
-                        <div class="order-items">
-                            ${order.products.map(item => `
-                                <div class="order-item">
-                                    <img src="https://picsum.photos/seed/product/60/60.jpg" alt="${item.title}" class="order-item-image">
-                                    <div class="order-item-details">
-                                        <h4>${item.title}</h4>
-                                        <p>₹${item.price} × ${item.quantity}</p>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div class="order-footer">
-                            <div class="order-total">Total: ₹${order.amount}</div>
-                            <div>
-                                <span>Date: ${date}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function viewOrderDetail(orderId) {
-            const order = app.orders.find(o => o.id === orderId);
-            if (!order) return;
-
-            const date = order.createdAt ? order.createdAt.toDate().toLocaleDateString() : 'Unknown';
-            const canDownload = order.status === 'paid' || order.status === 'fulfilled';
-            
-            elements.orderDetailBody.innerHTML = `
-                <div style="margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                        <div>
-                            <h3>Order #${order.orderId}</h3>
-                            <p style="color: var(--text-secondary);">Date: ${date}</p>
-                        </div>
-                        <div class="order-status status-${order.status}">${order.status}</div>
-                    </div>
-                </div>
-                
-                <div style="margin-bottom: 20px;">
-                    <h4 style="margin-bottom: 10px;">Products</h4>
-                    ${order.products.map(item => `
-                        <div style="display: flex; gap: 15px; margin-bottom: 15px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;">
-                            <img src="https://picsum.photos/seed/product/60/60.jpg" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
-                            <div style="flex: 1;">
-                                <h5>${item.title}</h5>
-                                <p style="color: var(--text-secondary);">₹${item.price} × ${item.quantity}</p>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-                    <div>
-                        <h4>Total: ₹${order.amount}</h4>
-                    </div>
-                    ${canDownload ? `
-                        <button class="btn btn-primary" onclick="downloadOrderItems('${order.id}')">
-                            <i class="fas fa-download"></i> Buy Now
-                        </button>
-                    ` : `
-                        <button class="btn btn-secondary" disabled>
-                            <i class="fas fa-clock"></i> ${order.status}
-                        </button>
-                    `}
-                </div>
-            `;
-            
-            elements.orderDetailModal.classList.add('active');
-        }
-
-        function downloadOrderItems(orderId) {
-            const order = app.orders.find(o => o.id === orderId);
-            if (!order) return;
-
-            // Collect all download links
-            const downloadLinks = [];
-            order.products.forEach(item => {
-                if (item.downloadLink) {
-                    downloadLinks.push(item.downloadLink);
-                }
-            });
-            
-            if (downloadLinks.length > 0) {
-                // Show the first download link in popup
-                elements.fileLinkInput.value = downloadLinks[0];
-                elements.fileLinkPopup.classList.add('active');
-                elements.orderDetailModal.classList.remove('active');
-            } else {
-                // Simulate download if no link available
-                showToast('Download starting...', 'info');
-                order.products.forEach(item => {
-                    setTimeout(() => {
-                        const link = document.createElement('a');
-                        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`This is a sample download for ${item.title}. In a real app, this would be the actual file.`);
-                        link.download = `${item.title}.txt`;
-                        link.click();
-                    }, 1000);
-                });
-            }
-        }
-
-        // Wishlist Functions
-        function toggleWishlist(productId) {
-            if (!app.user) {
-                showToast('Please login to add items to wishlist', 'error');
-                navigateToPage('login');
-                return;
-            }
-
-            const index = app.wishlist.indexOf(productId);
-            if (index > -1) {
-                app.wishlist.splice(index, 1);
-                showToast('Removed from wishlist', 'success');
-            } else {
-                app.wishlist.push(productId);
-                showToast('Added to wishlist', 'success');
-            }
-
-            // Update in Firestore
-            db.collection('users').doc(app.user.uid).update({
-                wishlist: app.wishlist
-            }).catch(error => {
-                console.error('Error updating wishlist:', error);
-            });
-
-            updateWishlistCount();
-            
-            // Update modal button if modal is open
-            if (app.selectedProduct && app.selectedProduct.id === productId) {
-                const isInWishlist = app.wishlist.includes(productId);
-                document.getElementById('modalAddToWishlist').innerHTML = isInWishlist ? 
-                    '<i class="fas fa-heart"></i> Remove from Wishlist' : 
-                    '<i class="far fa-heart"></i> Add to Wishlist';
-            }
-        }
-
-        function renderWishlist() {
-            if (!app.user) {
-                elements.wishlistGrid.innerHTML = '<p>Please login to view your wishlist</p>';
-                return;
-            }
-
-            if (app.wishlist.length === 0) {
-                elements.wishlistGrid.innerHTML = '<p>Your wishlist is empty</p>';
-                return;
-            }
-
-            const wishlistProducts = app.products.filter(product => app.wishlist.includes(product.id));
-            
-            if (wishlistProducts.length === 0) {
-                elements.wishlistGrid.innerHTML = '<p>No products found in your wishlist</p>';
-                return;
-            }
-
-            elements.wishlistGrid.innerHTML = wishlistProducts.map(product => `
-                <div class="product-card" data-id="${product.id}">
-                    <img src="${product.thumbnails && product.thumbnails.length > 0 ? product.thumbnails[0] : 'https://picsum.photos/seed/product/300/200.jpg'}" 
-                         alt="${product.title}" class="product-image">
-                    <div class="product-content">
-                        <h3 class="product-title">${product.title}</h3>
-                        <p class="product-description">${stripHtml(product.descriptionHTML || product.description || '')}</p>
-                        <div class="product-meta">
-                            <div class="product-price">₹${product.priceINR}</div>
-                            <div class="product-rating">
-                                ${renderStars(product.rating || 0)}
-                                <span>${product.rating || 0}</span>
-                            </div>
-                        </div>
-                        <div class="product-actions">
-                            <button class="btn btn-primary" onclick="viewProduct('${product.id}')">View</button>
-                            <button class="btn btn-secondary" onclick="toggleWishlist('${product.id}')">
-                                <i class="fas fa-heart"></i>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${product.image || 'https://picsum.photos/seed/' + product.id + '/50/50.jpg'}" alt="${product.title}" width="50" height="50">
+                    </td>
+                    <td>${product.title}</td>
+                    <td>${product.category}</td>
+                    <td>${product.price === 0 ? 'FREE' : '₹' + product.price}</td>
+                    <td>${product.stock || 0}</td>
+                    <td>
+                        <span class="status-badge ${product.visible ? 'status-active' : 'status-inactive'}">
+                            ${product.visible ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="table-actions-cell">
+                            <button class="action-btn" onclick="editProduct('${product.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn" onclick="deleteProduct('${product.id}')">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateWishlistCount() {
-            elements.wishlistCount.textContent = app.wishlist.length;
-        }
-
-        function loadWishlistFromStorage() {
-            // Wishlist is loaded from Firestore when user is authenticated
-            // This function is kept for consistency with cart loading
-        }
-
-        // Profile
-        function renderProfile() {
-            if (!app.user) {
-                elements.profileContent.innerHTML = `
-                    <p>Please login to view your profile</p>
-                    <button class="btn btn-primary" onclick="navigateToPage('login')">Login</button>
+                    </td>
                 `;
-                return;
-            }
-
-            elements.profileContent.innerHTML = `
-                <div class="form-group">
-                    <label class="form-label">Full Name</label>
-                    <input type="text" class="form-input" id="profileNameInput" value="${app.user.displayName || ''}">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" value="${app.user.email}" disabled>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Phone</label>
-                    <input type="tel" class="form-input" id="profilePhoneInput" placeholder="Enter your phone number">
-                </div>
-                <button class="form-submit" onclick="updateProfile()">Update Profile</button>
-                <button class="btn btn-secondary" onclick="logout()" style="margin-top: 10px; width: 100%;">Logout</button>
-            `;
-        }
-
-        function updateProfile() {
-            const name = document.getElementById('profileNameInput').value;
-            const phone = document.getElementById('profilePhoneInput').value;
-
-            if (!name) {
-                showToast('Name cannot be empty', 'error');
-                return;
-            }
-
-            // Update Firebase Auth profile
-            app.user.updateProfile({
-                displayName: name
-            })
-            .then(() => {
-                // Update Firestore document
-                return db.collection('users').doc(app.user.uid).update({
-                    displayName: name,
-                    phone: phone
-                });
-            })
-            .then(() => {
-                showToast('Profile updated successfully', 'success');
-                updateAuthUI();
-            })
-            .catch(error => {
-                showToast(error.message, 'error');
+                
+                elements.productsTable.appendChild(row);
             });
         }
 
-        function logout() {
-            // Detach orders listener
-            if (app.ordersListener) {
-                app.ordersListener();
-                app.ordersListener = null;
+        // Search Products
+        function searchProducts() {
+            const searchTerm = elements.productSearch.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderProducts();
+                return;
             }
             
-            auth.signOut()
-                .then(() => {
-                    showToast('Logged out successfully', 'success');
-                    navigateToPage('home');
-                })
-                .catch(error => {
-                    showToast(error.message, 'error');
+            const filteredProducts = products.filter(product => 
+                product.title.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            
+            // Render filtered products
+            elements.productsTable.innerHTML = '';
+            
+            if (filteredProducts.length === 0) {
+                elements.productsTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">No products found</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredProducts.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${product.image || 'https://picsum.photos/seed/' + product.id + '/50/50.jpg'}" alt="${product.title}" width="50" height="50">
+                    </td>
+                    <td>${product.title}</td>
+                    <td>${product.category}</td>
+                    <td>${product.price === 0 ? 'FREE' : '₹' + product.price}</td>
+                    <td>${product.stock || 0}</td>
+                    <td>
+                        <span class="status-badge ${product.visible ? 'status-active' : 'status-inactive'}">
+                            ${product.visible ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="table-actions-cell">
+                            <button class="action-btn" onclick="editProduct('${product.id}')">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn" onclick="deleteProduct('${product.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                elements.productsTable.appendChild(row);
+            });
+        }
+
+        // Open Product Modal
+        function openProductModal(productId = null) {
+            currentProduct = productId ? products.find(p => p.id === productId) : null;
+            
+            if (currentProduct) {
+                // Edit mode
+                elements.productModalTitle.textContent = 'Edit Product';
+                document.getElementById('productTitle').value = currentProduct.title;
+                document.getElementById('productCategory').value = currentProduct.category;
+                document.getElementById('productPrice').value = currentProduct.price;
+                document.getElementById('productStock').value = currentProduct.stock || 0;
+                document.getElementById('productDescription').value = currentProduct.description;
+                document.getElementById('productImage').value = currentProduct.image || '';
+                document.getElementById('productTags').value = currentProduct.tags ? currentProduct.tags.join(', ') : '';
+                document.getElementById('productPdf').value = currentProduct.pdf || '';
+                document.getElementById('productVisible').checked = currentProduct.visible !== false;
+            } else {
+                // Add mode
+                elements.productModalTitle.textContent = 'Add Product';
+                elements.productForm.reset();
+            }
+            
+            elements.productModal.classList.add('open');
+        }
+
+        // Close Product Modal
+        function closeProductModal() {
+            elements.productModal.classList.remove('open');
+            currentProduct = null;
+        }
+
+        // Save Product
+        async function saveProduct() {
+            const title = document.getElementById('productTitle').value.trim();
+            const category = document.getElementById('productCategory').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            const description = document.getElementById('productDescription').value.trim();
+            const image = document.getElementById('productImage').value.trim();
+            const tags = document.getElementById('productTags').value.split(',').map(tag => tag.trim()).filter(tag => tag);
+            const pdf = document.getElementById('productPdf').value.trim();
+            const visible = document.getElementById('productVisible').checked;
+            
+            if (!title || !category || isNaN(price) || isNaN(stock) || !description) {
+                showToast('Please fill all required fields', 'warning');
+                return;
+            }
+            
+            try {
+                const productData = {
+                    title,
+                    category,
+                    price,
+                    stock,
+                    description,
+                    image,
+                    tags,
+                    pdf,
+                    visible,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                if (currentProduct) {
+                    // Update existing product
+                    await db.collection('products').doc(currentProduct.id).update(productData);
+                    showToast('Product updated successfully', 'success');
+                } else {
+                    // Add new product
+                    productData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection('products').add(productData);
+                    showToast('Product added successfully', 'success');
+                }
+                
+                closeProductModal();
+                loadProducts();
+                loadDashboardData();
+            } catch (error) {
+                console.error('Error saving product:', error);
+                showToast('Failed to save product', 'error');
+            }
+        }
+
+        // Edit Product
+        function editProduct(productId) {
+            openProductModal(productId);
+        }
+
+        // Delete Product
+        async function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            
+            try {
+                await db.collection('products').doc(productId).delete();
+                showToast('Product deleted successfully', 'success');
+                loadProducts();
+                loadDashboardData();
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showToast('Failed to delete product', 'error');
+            }
+        }
+
+        // Load Orders
+        async function loadOrders() {
+            try {
+                const snapshot = await db.collection('orders')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                orders = [];
+                snapshot.forEach(doc => {
+                    orders.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
                 });
+                
+                renderOrders();
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                showToast('Failed to load orders', 'error');
+            }
         }
 
-        // Search
-        function handleSearch() {
-            app.searchQuery = elements.searchInput.value.trim();
-            filterAndRenderProducts();
-        }
-
-        // Utility Functions
-        function showToast(message, type = 'info') {
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
+        // Render Orders
+        function renderOrders() {
+            elements.ordersTable.innerHTML = '';
             
-            let icon = '';
-            switch (type) {
-                case 'success':
-                    icon = '<i class="fas fa-check-circle"></i>';
-                    break;
-                case 'error':
-                    icon = '<i class="fas fa-exclamation-circle"></i>';
-                    break;
-                case 'info':
-                    icon = '<i class="fas fa-info-circle"></i>';
-                    break;
+            if (orders.length === 0) {
+                elements.ordersTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">No orders found</td>
+                    </tr>
+                `;
+                return;
             }
             
-            toast.innerHTML = `${icon} <span>${message}</span>`;
-            elements.toastContainer.appendChild(toast);
+            orders.forEach(order => {
+                const row = document.createElement('tr');
+                
+                const statusClass = order.status === 'paid' ? 'status-paid' : 
+                                   order.status === 'pending' ? 'status-pending' : 'status-failed';
+                
+                row.innerHTML = `
+                    <td>${order.orderId}</td>
+                    <td>${order.userEmail || 'N/A'}</td>
+                    <td>${order.products ? order.products.length : 0} items</td>
+                    <td>₹${order.amount || 0}</td>
+                    <td><span class="order-status ${statusClass}">${order.status}</span></td>
+                    <td>${order.createdAt ? new Date(order.createdAt.toDate()).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <div class="table-actions-cell">
+                            <button class="action-btn" onclick="viewOrder('${order.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${order.status === 'pending' ? `
+                                <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'paid')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                
+                elements.ordersTable.appendChild(row);
+            });
+        }
+
+        // Search Orders
+        function searchOrders() {
+            const searchTerm = elements.orderSearch.value.toLowerCase().trim();
             
-            // Auto remove after 3 seconds
+            if (!searchTerm) {
+                renderOrders();
+                return;
+            }
+            
+            const filteredOrders = orders.filter(order => 
+                order.orderId.toLowerCase().includes(searchTerm) ||
+                (order.userEmail && order.userEmail.toLowerCase().includes(searchTerm))
+            );
+            
+            // Render filtered orders
+            elements.ordersTable.innerHTML = '';
+            
+            if (filteredOrders.length === 0) {
+                elements.ordersTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">No orders found</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredOrders.forEach(order => {
+                const row = document.createElement('tr');
+                
+                const statusClass = order.status === 'paid' ? 'status-paid' : 
+                                   order.status === 'pending' ? 'status-pending' : 'status-failed';
+                
+                row.innerHTML = `
+                    <td>${order.orderId}</td>
+                    <td>${order.userEmail || 'N/A'}</td>
+                    <td>${order.products ? order.products.length : 0} items</td>
+                    <td>₹${order.amount || 0}</td>
+                    <td><span class="order-status ${statusClass}">${order.status}</span></td>
+                    <td>${order.createdAt ? new Date(order.createdAt.toDate()).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <div class="table-actions-cell">
+                            <button class="action-btn" onclick="viewOrder('${order.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${order.status === 'pending' ? `
+                                <button class="action-btn" onclick="updateOrderStatus('${order.id}', 'paid')">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                
+                elements.ordersTable.appendChild(row);
+            });
+        }
+
+        // View Order
+        function viewOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            currentOrder = order;
+            
+            // Render order details
+            elements.orderModalBody.innerHTML = `
+                <div class="order-detail">
+                    <div class="order-header">
+                        <div class="order-id">Order #${order.orderId}</div>
+                        <div class="order-status ${order.status === 'paid' ? 'status-paid' : 'status-pending'}">${order.status}</div>
+                    </div>
+                    <div class="order-info">
+                        <p><strong>Customer:</strong> ${order.userEmail || 'N/A'}</p>
+                        <p><strong>Date:</strong> ${order.createdAt ? new Date(order.createdAt.toDate()).toLocaleDateString() : 'N/A'}</p>
+                        <p><strong>Payment Method:</strong> ${order.paymentMethod || 'N/A'}</p>
+                        <p><strong>Total:</strong> ${order.amount === 0 ? 'FREE' : '₹' + order.amount}</p>
+                    </div>
+                    <div class="order-items">
+                        <h3>Items</h3>
+                        ${order.products ? order.products.map(product => `
+                            <div class="order-item">
+                                <div class="order-item-info">
+                                    <h4>${product.title}</h4>
+                                    <p>${product.price === 0 ? 'FREE' : '₹' + product.price} × ${product.quantity}</p>
+                                    ${product.pdf ? `<p><strong>PDF:</strong> <a href="${product.pdf}" target="_blank">View PDF</a></p>` : ''}
+                                </div>
+                            </div>
+                        `).join('') : ''}
+                    </div>
+                </div>
+            `;
+            
+            // Render order actions
+            elements.orderModalFooter.innerHTML = `
+                ${order.status === 'pending' ? `
+                    <button class="btn btn-primary" onclick="updateOrderStatus('${order.id}', 'paid')">
+                        <i class="fas fa-check"></i> Mark as Paid
+                    </button>
+                ` : ''}
+                <button class="btn btn-secondary" onclick="closeOrderModal()">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            `;
+            
+            // Show modal
+            elements.orderModal.classList.add('open');
+        }
+
+        // Close Order Modal
+        function closeOrderModal() {
+            elements.orderModal.classList.remove('open');
+            currentOrder = null;
+        }
+
+        // Update Order Status
+        async function updateOrderStatus(orderId, status) {
+            try {
+                await db.collection('orders').doc(orderId).update({
+                    status: status,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    ...(status === 'paid' ? { paidAt: firebase.firestore.FieldValue.serverTimestamp() } : {})
+                });
+                
+                showToast(`Order marked as ${status}`, 'success');
+                closeOrderModal();
+                loadOrders();
+                loadDashboardData();
+            } catch (error) {
+                console.error('Error updating order status:', error);
+                showToast('Failed to update order status', 'error');
+            }
+        }
+
+        // Export Orders
+        function exportOrders() {
+            // Create CSV content
+            let csvContent = "Order ID,Customer,Amount,Status,Date\n";
+            
+            orders.forEach(order => {
+                csvContent += `${order.orderId},${order.userEmail || 'N/A'},${order.amount || 0},${order.status},${order.createdAt ? new Date(order.createdAt.toDate()).toLocaleDateString() : 'N/A'}\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'orders.csv';
+            a.click();
+            
+            showToast('Orders exported successfully', 'success');
+        }
+
+        // Load Users
+        async function loadUsers() {
+            try {
+                const snapshot = await db.collection('users').get();
+                
+                users = [];
+                snapshot.forEach(doc => {
+                    users.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                
+                renderUsers();
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showToast('Failed to load users', 'error');
+            }
+        }
+
+        // Render Users
+        function renderUsers() {
+            elements.usersTable.innerHTML = '';
+            
+            if (users.length === 0) {
+                elements.usersTable.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">No users found</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${user.email}</td>
+                    <td>${user.displayName || 'N/A'}</td>
+                    <td>${user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A'}</td>
+                    <td>${user.orderCount || 0}</td>
+                    <td>
+                        <span class="status-badge ${user.isAdmin ? 'status-admin' : 'status-user'}">
+                            ${user.isAdmin ? 'Admin' : 'User'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="table-actions-cell">
+                            <button class="action-btn" onclick="toggleAdminStatus('${user.id}', ${!user.isAdmin})">
+                                <i class="fas fa-${user.isAdmin ? 'user-minus' : 'user-plus'}"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                elements.usersTable.appendChild(row);
+            });
+        }
+
+        // Search Users
+        function searchUsers() {
+            const searchTerm = elements.userSearch.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                renderUsers();
+                return;
+            }
+            
+            const filteredUsers = users.filter(user => 
+                user.email.toLowerCase().includes(searchTerm) ||
+                (user.displayName && user.displayName.toLowerCase().includes(searchTerm))
+            );
+            
+            // Render filtered users
+            elements.usersTable.innerHTML = '';
+            
+            if (filteredUsers.length === 0) {
+                elements.usersTable.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="empty-state">No users found</td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${user.email}</td>
+                    <td>${user.displayName || 'N/A'}</td>
+                    <td>${user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A'}</td>
+                    <td>${user.orderCount || 0}</td>
+                    <td>
+                        <span class="status-badge ${user.isAdmin ? 'status-admin' : 'status-user'}">
+                            ${user.isAdmin ? 'Admin' : 'User'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="table-actions-cell">
+                            <button class="action-btn" onclick="toggleAdminStatus('${user.id}', ${!user.isAdmin})">
+                                <i class="fas fa-${user.isAdmin ? 'user-minus' : 'user-plus'}"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                
+                elements.usersTable.appendChild(row);
+            });
+        }
+
+        // Toggle Admin Status
+        async function toggleAdminStatus(userId, isAdmin) {
+            try {
+                await db.collection('users').doc(userId).update({
+                    isAdmin: isAdmin
+                });
+                
+                showToast(`User ${isAdmin ? 'promoted to admin' : 'demoted to user'}`, 'success');
+                loadUsers();
+            } catch (error) {
+                console.error('Error updating user status:', error);
+                showToast('Failed to update user status', 'error');
+            }
+        }
+
+        // Export Users
+        function exportUsers() {
+            // Create CSV content
+            let csvContent = "Email,Name,Registered,Orders,Status\n";
+            
+            users.forEach(user => {
+                csvContent += `${user.email},${user.displayName || 'N/A'},${user.createdAt ? new Date(user.createdAt.toDate()).toLocaleDateString() : 'N/A'},${user.orderCount || 0},${user.isAdmin ? 'Admin' : 'User'}\n`;
+            });
+            
+            // Create download link
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'users.csv';
+            a.click();
+            
+            showToast('Users exported successfully', 'success');
+        }
+
+        // Load Settings
+        async function loadSettings() {
+            try {
+                const doc = await db.collection('siteSettings').doc('settings').get();
+                
+                if (doc.exists) {
+                    const settings = doc.data();
+                    elements.siteTitle.value = settings.siteTitle || 'Alpha Notes';
+                    elements.siteEmail.value = settings.contactEmail || 'contact@alphanotes.com';
+                    elements.upiId.value = settings.upiId || 'yourupi@ybl';
+                    elements.announcement.value = settings.announcementsHtml || 'Welcome to Alpha Notes! Get premium study materials for Physics, Chemistry, and Biology.';
+                    elements.maintenanceMode.checked = settings.maintenanceMode || false;
+                }
+            } catch (error) {
+                console.error('Error loading settings:', error);
+                showToast('Failed to load settings', 'error');
+            }
+        }
+
+        // Save Settings
+        async function saveSettings() {
+            try {
+                await db.collection('siteSettings').doc('settings').set({
+                    siteTitle: elements.siteTitle.value,
+                    contactEmail: elements.siteEmail.value,
+                    upiId: elements.upiId.value,
+                    announcementsHtml: elements.announcement.value,
+                    maintenanceMode: elements.maintenanceMode.checked,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                showToast('Settings saved successfully', 'success');
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showToast('Failed to save settings', 'error');
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'info') {
+            elements.toast.textContent = message;
+            elements.toast.className = 'toast show ' + type;
+            
             setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => {
-                    if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast);
-                    }
-                }, 300);
+                elements.toast.classList.remove('show');
             }, 3000);
         }
 
-        function renderStars(rating) {
-            const fullStars = Math.floor(rating);
-            const halfStar = rating % 1 >= 0.5 ? 1 : 0;
-            const emptyStars = 5 - fullStars - halfStar;
-            
-            let stars = '';
-            for (let i = 0; i < fullStars; i++) {
-                stars += '<i class="fas fa-star"></i>';
-            }
-            if (halfStar) {
-                stars += '<i class="fas fa-star-half-alt"></i>';
-            }
-            for (let i = 0; i < emptyStars; i++) {
-                stars += '<i class="far fa-star"></i>';
-            }
-            
-            return stars;
-        }
-
-        function stripHtml(html) {
-            const tmp = document.createElement('div');
-            tmp.innerHTML = html;
-            return tmp.textContent || tmp.innerText || '';
-        }
-
-        function debounce(func, wait) {
-            let timeout;
-            return function(...args) {
-                clearTimeout(timeout);
-                timeout = setTimeout(() => func.apply(this, args), wait);
-            };
-        }
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
