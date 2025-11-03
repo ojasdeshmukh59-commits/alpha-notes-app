@@ -916,6 +916,56 @@
             margin-bottom: 20px;
         }
 
+        /* File Link Popup */
+        .file-link-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-link-popup.active {
+            display: flex;
+        }
+
+        .file-link-content {
+            glass;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .file-link-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--success);
+        }
+
+        .file-link-input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        .file-link-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .hero h1 {
@@ -1261,6 +1311,26 @@
         </div>
     </div>
 
+    <!-- File Link Popup -->
+    <div class="file-link-popup" id="fileLinkPopup">
+        <div class="file-link-content">
+            <h3 class="file-link-title">
+                <i class="fas fa-check-circle"></i> Order Successful!
+            </h3>
+            <p style="margin-bottom: 20px;">Your PDF notes are ready to download. Here's your download link:</p>
+            <input type="text" class="file-link-input" id="fileLinkInput" readonly>
+            <div class="file-link-actions">
+                <button class="btn btn-primary" id="copyLinkBtn">
+                    <i class="fas fa-copy"></i> Copy Link
+                </button>
+                <button class="btn btn-secondary" id="openLinkBtn">
+                    <i class="fas fa-external-link-alt"></i> Open
+                </button>
+            </div>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 15px;" id="closeFileLinkBtn">Close</button>
+        </div>
+    </div>
+
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
         <a href="#" class="nav-item active" data-page="home">
@@ -1356,7 +1426,9 @@
             profileContent: document.getElementById('profileContent'),
             loginForm: document.getElementById('loginForm'),
             registerForm: document.getElementById('registerForm'),
-            couponInput: document.getElementById('couponInput')
+            couponInput: document.getElementById('couponInput'),
+            fileLinkPopup: document.getElementById('fileLinkPopup'),
+            fileLinkInput: document.getElementById('fileLinkInput')
         };
 
         // Initialize App
@@ -1466,6 +1538,21 @@
                 if (app.selectedProduct) {
                     toggleWishlist(app.selectedProduct.id);
                 }
+            });
+
+            // File Link Popup Actions
+            document.getElementById('copyLinkBtn').addEventListener('click', () => {
+                elements.fileLinkInput.select();
+                document.execCommand('copy');
+                showToast('Link copied to clipboard!', 'success');
+            });
+
+            document.getElementById('openLinkBtn').addEventListener('click', () => {
+                window.open(elements.fileLinkInput.value, '_blank');
+            });
+
+            document.getElementById('closeFileLinkBtn').addEventListener('click', () => {
+                elements.fileLinkPopup.classList.remove('active');
             });
 
             // Dark Mode Toggle
@@ -1772,7 +1859,8 @@
                     title: product.title,
                     price: product.priceINR,
                     image: product.thumbnails && product.thumbnails.length > 0 ? product.thumbnails[0] : 'https://picsum.photos/seed/product/80/80.jpg',
-                    quantity: 1
+                    quantity: 1,
+                    downloadLink: product.downloadLink || null
                 });
             }
 
@@ -1900,7 +1988,8 @@
                     id: item.id,
                     title: item.title,
                     price: item.price,
-                    quantity: item.quantity
+                    quantity: item.quantity,
+                    downloadLink: item.downloadLink
                 })),
                 amount: total,
                 status: status,
@@ -1911,7 +2000,10 @@
                 .then(docRef => {
                     if (status === 'free') {
                         // For free orders, mark as paid immediately
-                        return docRef.update({ status: 'paid', paidAt: firebase.firestore.FieldValue.serverTimestamp() });
+                        return docRef.update({ 
+                            status: 'paid', 
+                            paidAt: firebase.firestore.FieldValue.serverTimestamp() 
+                        });
                     } else {
                         // For paid orders, initiate payment
                         initiatePayment(docRef.id, total, orderId);
@@ -1925,8 +2017,12 @@
                         renderCart();
                         updateCartCount();
                         elements.cartSidebar.classList.remove('active');
-                        showToast('Order placed successfully! Check your orders for downloads.', 'success');
-                        navigateToPage('orders');
+                        
+                        // Show file link popup for free products
+                        showFileLinkPopup(orderData.products);
+                        
+                        // Reload orders to show in dashboard
+                        loadOrders();
                     }
                 })
                 .catch(error => {
@@ -1953,21 +2049,49 @@
                     }
                 })
                 .then(() => {
-                    // Clear cart
-                    app.cart = [];
-                    saveCartToStorage();
-                    renderCart();
-                    updateCartCount();
-                    elements.cartSidebar.classList.remove('active');
-                    
-                    showToast('Payment successful! Check your orders for downloads.', 'success');
-                    navigateToPage('orders');
+                    // Get the order data to show download links
+                    db.collection('orders').doc(orderId).get()
+                        .then(doc => {
+                            const orderData = doc.data();
+                            
+                            // Clear cart
+                            app.cart = [];
+                            saveCartToStorage();
+                            renderCart();
+                            updateCartCount();
+                            elements.cartSidebar.classList.remove('active');
+                            
+                            // Show file link popup
+                            showFileLinkPopup(orderData.products);
+                            
+                            // Reload orders to show in dashboard
+                            loadOrders();
+                            
+                            showToast('Payment successful! Check your orders for downloads.', 'success');
+                            navigateToPage('orders');
+                        });
                 })
                 .catch(error => {
                     console.error('Error updating order:', error);
                     showToast('Payment successful but failed to update order. Please contact support.', 'error');
                 });
             }, 2000);
+        }
+
+        function showFileLinkPopup(products) {
+            // Collect all download links
+            const downloadLinks = [];
+            products.forEach(product => {
+                if (product.downloadLink) {
+                    downloadLinks.push(product.downloadLink);
+                }
+            });
+            
+            if (downloadLinks.length > 0) {
+                // Show the first download link (or combine multiple if needed)
+                elements.fileLinkInput.value = downloadLinks[0];
+                elements.fileLinkPopup.classList.add('active');
+            }
         }
 
         // Orders
@@ -2045,20 +2169,30 @@
             const order = app.orders.find(o => o.id === orderId);
             if (!order) return;
 
-            // In a real implementation, you would generate secure download links
-            // For this demo, we'll simulate downloads
+            // Collect all download links
+            const downloadLinks = [];
             order.products.forEach(item => {
-                // Simulate download
-                showToast(`Downloading ${item.title}...`, 'info');
-                
-                // Create a dummy download
-                setTimeout(() => {
-                    const link = document.createElement('a');
-                    link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`This is a sample download for ${item.title}. In a real app, this would be the actual file.`);
-                    link.download = `${item.title}.txt`;
-                    link.click();
-                }, 1000);
+                if (item.downloadLink) {
+                    downloadLinks.push(item.downloadLink);
+                }
             });
+            
+            if (downloadLinks.length > 0) {
+                // Show the first download link in popup
+                elements.fileLinkInput.value = downloadLinks[0];
+                elements.fileLinkPopup.classList.add('active');
+            } else {
+                // Simulate download if no link available
+                showToast('Download starting...', 'info');
+                order.products.forEach(item => {
+                    setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(`This is a sample download for ${item.title}. In a real app, this would be the actual file.`);
+                        link.download = `${item.title}.txt`;
+                        link.click();
+                    }, 1000);
+                });
+            }
         }
 
         // Wishlist Functions
