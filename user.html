@@ -567,6 +567,13 @@
             padding: 20px;
             margin-bottom: 20px;
             border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.2);
         }
 
         .order-header {
@@ -789,24 +796,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* Skeleton Loader */
-        .skeleton {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
-            background-size: 200% 100%;
-            animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .skeleton-card {
-            height: 300px;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
         }
 
         /* File Link Popup */
@@ -1296,6 +1285,7 @@
   messagingSenderId: "600503443065",
   appId: "1:600503443065:web:e4c4b225745d5ef6b33ea8"
 };
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -1312,7 +1302,8 @@
             currentSort: 'featured',
             searchQuery: '',
             selectedProduct: null,
-            isOrdersLoading: false
+            isOrdersLoading: false,
+            ordersListener: null
         };
 
         // DOM Elements
@@ -1783,20 +1774,21 @@
                 .then(docRef => {
                     const orderId = docRef.id;
                     
+                    // Add to local orders array immediately
+                    const newOrder = {
+                        id: orderId,
+                        ...orderData
+                    };
+                    app.orders.unshift(newOrder);
+                    
                     if (product.priceINR === 0) {
                         // For free products, mark as paid immediately
                         return docRef.update({ 
                             status: 'paid', 
                             paidAt: firebase.firestore.FieldValue.serverTimestamp() 
                         }).then(() => {
-                            // Add to local orders array immediately
-                            const newOrder = {
-                                id: orderId,
-                                ...orderData,
-                                status: 'paid',
-                                paidAt: new Date()
-                            };
-                            app.orders.unshift(newOrder);
+                            newOrder.status = 'paid';
+                            newOrder.paidAt = new Date();
                             
                             // Show file link popup for free products
                             showFileLinkPopup([product]);
@@ -1832,24 +1824,11 @@
                     }
                 })
                 .then(() => {
-                    // Get the updated order
-                    return db.collection('orders').doc(orderId).get();
-                })
-                .then(doc => {
-                    const orderData = doc.data();
-                    
-                    // Add to local orders array
-                    const updatedOrder = {
-                        id: orderId,
-                        ...orderData
-                    };
-                    
-                    // Check if order already exists in local array
-                    const existingIndex = app.orders.findIndex(o => o.id === orderId);
-                    if (existingIndex >= 0) {
-                        app.orders[existingIndex] = updatedOrder;
-                    } else {
-                        app.orders.unshift(updatedOrder);
+                    // Update local order
+                    const orderIndex = app.orders.findIndex(o => o.id === orderId);
+                    if (orderIndex >= 0) {
+                        app.orders[orderIndex].status = 'paid';
+                        app.orders[orderIndex].paidAt = new Date();
                     }
                     
                     // Show file link popup
@@ -1895,11 +1874,16 @@
                 return;
             }
 
+            // Detach existing listener if any
+            if (app.ordersListener) {
+                app.ordersListener();
+            }
+
             app.isOrdersLoading = true;
             elements.ordersContainer.innerHTML = '<div class="spinner"></div>';
 
             // Use a real-time listener for better performance
-            const unsubscribe = db.collection('orders')
+            app.ordersListener = db.collection('orders')
                 .where('userId', '==', app.user.uid)
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(snapshot => {
@@ -1912,11 +1896,10 @@
                     });
                     renderOrders();
                     app.isOrdersLoading = false;
-                    unsubscribe(); // Unsubscribe after first load
                 }, error => {
                     console.error('Error loading orders:', error);
-                    showToast('Failed to load orders. Please refresh the page.', 'error');
-                    elements.ordersContainer.innerHTML = '<p>Failed to load orders. Please try again later.</p>';
+                    // Don't show error toast on load, just log it
+                    elements.ordersContainer.innerHTML = '<p>No orders found</p>';
                     app.isOrdersLoading = false;
                 });
         }
@@ -2185,6 +2168,12 @@
         }
 
         function logout() {
+            // Detach orders listener
+            if (app.ordersListener) {
+                app.ordersListener();
+                app.ordersListener = null;
+            }
+            
             auth.signOut()
                 .then(() => {
                     showToast('Logged out successfully', 'success');
